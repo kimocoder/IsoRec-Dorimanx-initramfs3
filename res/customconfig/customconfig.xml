@@ -112,6 +112,7 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="darkness" value="darkness"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
+			<spinnerItem name="NeoX" value="neox"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
@@ -238,6 +239,7 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="darkness" value="darkness"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
+			<spinnerItem name="NeoX" value="neox"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 

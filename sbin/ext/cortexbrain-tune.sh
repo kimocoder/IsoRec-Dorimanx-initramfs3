@@ -1307,17 +1307,17 @@ BLN_CORRECTION()
 
 TOUCH_KEYS_CORRECTION()
 {
-	if [ "$dyn_brightness" == on ]; then
-		echo "1" > /sys/class/misc/notification/dyn_brightness;
-	fi;
+	if [ "$force_disable" -eq 0 ]; then
+		if [ "$dyn_brightness" == on ]; then
+			echo "1" > /sys/class/misc/notification/dyn_brightness;
+		fi;
 
-	if [ "$led_timeout_ms" -eq "0" ]; then
-		echo "0" > /sys/class/misc/notification/led_timeout_ms;
-	else
 		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms > /dev/null;
-	fi;
 
-	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
+		log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
+	else
+		log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: LEDS are forced OFF ***";
+	fi;
 }
 
 # if crond used, then give it root perent - if started by STweaks, then it will be killed in time

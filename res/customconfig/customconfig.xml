@@ -675,9 +675,13 @@
 
 	<settingsPane description="Touch keys light settings. Here you can set the way touch keys light work." name="Touch keys lights settings">
 
+		<spinner description="Touch keys lights Enable or Disable, use this to force lights OFF if your ROM has no support for this." name="Force Leds Disable" action="generic /sys/devices/virtual/sec/sec_touchkey/force_disable">
+			<spinnerItem name="Leds Timeout Enabled" value="0"/> 
+			<spinnerItem name="Leds Forced OFF" value="1"/> 
+		</spinner>
+
 		<spinner description="LED timeout. Select Use ROM defaults if your ROM already has LED timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use LED fadeout effect." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
-			<spinnerItem name="Use ROM defaults (disabled)" value="0"/> 
-			<spinnerItem name="No timeout" value="9999999"/> 
+			<spinnerItem name="Always ON" value="9999999"/> 
 			<spinnerItem name="1 sec" value="1000"/> 
 			<spinnerItem name="3 sec" value="3000"/> 
 			<spinnerItem name="6 sec" value="6000"/> 

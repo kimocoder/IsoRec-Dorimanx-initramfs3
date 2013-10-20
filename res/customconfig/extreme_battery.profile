@@ -171,6 +171,7 @@ sound_volume3=0
 notification_enabled=off
 bln_switch=0
 notification_timeout=0
+force_disable=0
 led_timeout_ms=3000
 blnww=on
 led_fadeout=on

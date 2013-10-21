@@ -105,6 +105,10 @@ IO_TWEAKS()
 				echo "0" > $i/queue/iostats;
 			fi;
 
+			if [ -e $i/queue/rq_affinity ]; then
+				echo "1" > $i/queue/rq_affinity;
+			fi;
+
 			if [ -e $i/queue/nr_requests ]; then
 				echo "64" > $i/queue/nr_requests; # default: 128
 			fi;
@@ -143,7 +147,10 @@ IO_TWEAKS()
 		return 0;
 	fi;
 }
-IO_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	IO_TWEAKS;
+fi;
 
 # ==============================================================
 # KERNEL-TWEAKS
@@ -167,7 +174,10 @@ KERNEL_TWEAKS()
 		echo "memory_tweaks disabled";
 	fi;
 }
-KERNEL_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	KERNEL_TWEAKS;
+fi;
 
 # ==============================================================
 # SYSTEM-TWEAKS
@@ -185,7 +195,10 @@ SYSTEM_TWEAKS()
 		echo "system_tweaks disabled";
 	fi;
 }
-SYSTEM_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	SYSTEM_TWEAKS;
+fi;
 
 # ==============================================================
 # BATTERY-TWEAKS
@@ -247,7 +260,8 @@ BATTERY_TWEAKS()
 	fi;
 }
 # run this tweak once, if the background-process is disabled
-if [ "$cortexbrain_background_process" -eq "0" ]; then
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ] || [ "$cortexbrain_background_process" -eq "0" ]; then
 	BATTERY_TWEAKS;
 fi;
 
@@ -648,7 +662,10 @@ MEMORY_TWEAKS()
 		return 0;
 	fi;
 }
-MEMORY_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	MEMORY_TWEAKS;
+fi;
 
 # ==============================================================
 # ENTROPY-TWEAKS
@@ -735,7 +752,10 @@ TCP_TWEAKS()
 		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: disable";
 	fi;
 }
-TCP_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	TCP_TWEAKS;
+fi;
 
 # ==============================================================
 # FIREWALL-TWEAKS
@@ -755,7 +775,10 @@ FIREWALL_TWEAKS()
 		return 0;
 	fi;
 }
-FIREWALL_TWEAKS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	FIREWALL_TWEAKS;
+fi;
 
 # ==============================================================
 # UKSM-TWEAKS
@@ -968,7 +991,10 @@ MOUNT_SD_CARD()
 	fi;
 }
 # run dual mount on boot
-MOUNT_SD_CARD;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	MOUNT_SD_CARD;
+fi;
 
 MALI_TIMEOUT()
 {
@@ -1212,7 +1238,10 @@ SWAPPINESS()
 
 	log -p i -t $FILE_NAME "*** SWAPPINESS: $swappiness ***";
 }
-SWAPPINESS;
+apply_cpu="$2";
+if [ "$apply_cpu" != "update" ]; then
+	SWAPPINESS;
+fi;
 
 # disable/enable ipv6
 IPV6()
@@ -1386,7 +1415,7 @@ IO_SCHEDULER()
 		local tmp_scheduler="";
 		local new_scheduler="";
 
-		if [ -e $sys_mmc1_scheduler_tmp ]; then
+		if [ ! -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
 
@@ -1404,9 +1433,6 @@ IO_SCHEDULER()
 		fi;
 
 		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state - $new_scheduler ***: done";
-
-		# set I/O Tweaks again ...
-		IO_TWEAKS;
 	else
 		log -p i -t $FILE_NAME "*** Cortex IO_SCHEDULER: Disabled ***";
 	fi;

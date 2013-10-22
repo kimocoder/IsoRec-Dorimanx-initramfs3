@@ -114,8 +114,9 @@ IO_TWEAKS()
 			# Note that the total allocated number may be twice
 			# this amount, since it applies only to reads or writes
 			# (not the accumulated sum).
-			if [ -e $i/queue/nr_requests ]; then
-				echo "2" > $i/queue/nr_requests; # default: 128
+			echo "64" > /sys/block/mmcblk0/queue/nr_requests; # default: 128
+			if [ -e /sys/block/mmcblk1/queue/nr_requests ]; then
+				echo "64" > /sys/block/mmcblk1/queue/nr_requests; # default: 128
 			fi;
 		done;
 

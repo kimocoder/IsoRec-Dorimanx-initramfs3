@@ -109,8 +109,13 @@ IO_TWEAKS()
 				echo "1" > $i/queue/rq_affinity;
 			fi;
 
+			# This controls how many requests may be allocated
+			# in the block layer for read or write requests.
+			# Note that the total allocated number may be twice
+			# this amount, since it applies only to reads or writes
+			# (not the accumulated sum).
 			if [ -e $i/queue/nr_requests ]; then
-				echo "64" > $i/queue/nr_requests; # default: 128
+				echo "2" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 

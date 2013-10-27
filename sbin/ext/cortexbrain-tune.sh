@@ -76,49 +76,32 @@ IO_TWEAKS()
 
 		local i="";
 
-		local ZRM=`ls -d /sys/block/zram*`;
-		for i in $ZRM; do
-			if [ -e $i/queue/rotational ]; then
+		if [ -e /sys/block/zram0 ]; then
+			local ZRM=`ls -d /sys/block/zram*`;
+			for i in $ZRM; do
 				echo "0" > $i/queue/rotational;
-			fi;
-
-			if [ -e $i/queue/iostats ]; then
 				echo "0" > $i/queue/iostats;
-			fi;
-
-			if [ -e $i/queue/rq_affinity ]; then
 				echo "1" > $i/queue/rq_affinity;
-			fi;
-		done;
+			done;
+		fi;
 
 		local MMC=`ls -d /sys/block/mmc*`;
 		for i in $MMC; do
-			if [ -e $i/queue/scheduler ]; then
-				echo $scheduler > $i/queue/scheduler;
-			fi;
-
-			if [ -e $i/queue/rotational ]; then
-				echo "0" > $i/queue/rotational;
-			fi;
-
-			if [ -e $i/queue/iostats ]; then
-				echo "0" > $i/queue/iostats;
-			fi;
-
-			if [ -e $i/queue/rq_affinity ]; then
-				echo "1" > $i/queue/rq_affinity;
-			fi;
-
-			# This controls how many requests may be allocated
-			# in the block layer for read or write requests.
-			# Note that the total allocated number may be twice
-			# this amount, since it applies only to reads or writes
-			# (not the accumulated sum).
-			echo "64" > /sys/block/mmcblk0/queue/nr_requests; # default: 128
-			if [ -e /sys/block/mmcblk1/queue/nr_requests ]; then
-				echo "64" > /sys/block/mmcblk1/queue/nr_requests; # default: 128
-			fi;
+			echo "$scheduler" > $i/queue/scheduler;
+			echo "0" > $i/queue/rotational;
+			echo "0" > $i/queue/iostats;
+			echo "1" > $i/queue/rq_affinity;
 		done;
+
+		# This controls how many requests may be allocated
+		# in the block layer for read or write requests.
+		# Note that the total allocated number may be twice
+		# this amount, since it applies only to reads or writes
+		# (not the accumulated sum).
+		echo "64" > /sys/block/mmcblk0/queue/nr_requests; # default: 128
+		if [ -e /sys/block/mmcblk1/queue/nr_requests ]; then
+			echo "64" > /sys/block/mmcblk1/queue/nr_requests; # default: 128
+		fi;
 
 		# our storage is 16GB, best is 1024KB readahead
 		# see https://github.com/Keff/samsung-kernel-msm7x30/commit/a53f8445ff8d947bd11a214ab42340cc6d998600#L1R627
@@ -322,19 +305,27 @@ CPU_GOV_TWEAKS()
 	if [ "$cortexbrain_cpu" == on ]; then
 		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
+		if [ -e /sys/devices/system/cpu/cpufreq/alucard_hotplug ]; then
+			local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
+			local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
+			local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
+			local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
+			local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
+			local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
+			local maxcoreslimit_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/maxcoreslimit";
+		else
+			cpu_up_rate_tmp="/dev/null";
+			cpu_down_rate_tmp="/dev/null";
+			hotplug_freq_fst_tmp="/dev/null";
+			hotplug_freq_snd_tmp="/dev/null";
+			up_load_tmp="/dev/null";
+			down_load_tmp="/dev/null";
+			maxcoreslimit_tmp="/dev/null";
+		fi;
+
 		local sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
 		if [ ! -e $sampling_rate_tmp ]; then
 			sampling_rate_tmp="/dev/null";
-		fi;
-
-		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
-		if [ ! -e $cpu_up_rate_tmp ]; then
-			cpu_up_rate_tmp="/dev/null";
-		fi;
-
-		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
-		if [ ! -e $cpu_down_rate_tmp ]; then
-			cpu_down_rate_tmp="/dev/null";
 		fi;
 
 		local up_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold";
@@ -355,26 +346,6 @@ CPU_GOV_TWEAKS()
 		local inc_cpu_load_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load_at_min_freq";
 		if [ ! -e $inc_cpu_load_at_min_freq_tmp ]; then
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
-		fi;
-
-		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
-		if [ ! -e $hotplug_freq_fst_tmp ]; then
-			hotplug_freq_fst_tmp="/dev/null";
-		fi;
-
-		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
-		if [ ! -e $hotplug_freq_snd_tmp ]; then
-			hotplug_freq_snd_tmp="/dev/null";
-		fi;
-
-		local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
-		if [ ! -e $up_load_tmp ]; then
-			up_load_tmp="/dev/null";
-		fi;
-
-		local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
-		if [ ! -e $down_load_tmp ]; then
-			down_load_tmp="/dev/null";
 		fi;
 
 		local down_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold";
@@ -460,11 +431,6 @@ CPU_GOV_TWEAKS()
 		local freq_up_brake_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_up_brake";
 		if [ ! -e $freq_up_brake_tmp ]; then
 			freq_up_brake_tmp="/dev/null";
-		fi;
-
-		local maxcoreslimit_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/maxcoreslimit";
-		if [ ! -e $maxcoreslimit_tmp ]; then
-			maxcoreslimit_tmp="/dev/null";
 		fi;
 
 		local force_freqs_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/force_freqs_step";
@@ -1009,9 +975,9 @@ MALI_TIMEOUT()
 	if [ "$state" == "awake" ]; then
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "$state" == "sleep" ]; then
-		echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "800" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "$state" == "wake_boost" ]; then
-		echo "200" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;
 
 	log -p i -t $FILE_NAME "*** MALI_TIMEOUT: $state ***";
@@ -1035,21 +1001,14 @@ BUS_THRESHOLD()
 VFS_CACHE_PRESSURE()
 {
 	local state="$1";
-	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
-	if [ -e $sys_vfs_cache ]; then
-		if [ "$state" == "awake" ]; then
-			echo "50" > $sys_vfs_cache;
-		elif [ "$state" == "sleep" ]; then
-			echo "10" > $sys_vfs_cache;
-		fi;
-
-		log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: $state ***";
-
-		return 0;
+	if [ "$state" == "awake" ]; then
+		echo "60" > $sys_vfs_cache;
+	elif [ "$state" == "sleep" ]; then
+		echo "20" > $sys_vfs_cache;
 	fi;
 
-	return 1;
+	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: $state ***";
 }
 
 TWEAK_HOTPLUG_ECO()
@@ -1065,11 +1024,7 @@ TWEAK_HOTPLUG_ECO()
 		fi;
 
 		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_ECO: $state ***";
-
-		return 0;
 	fi;
-
-	return 1;
 }
 
 # ==============================================================
@@ -1200,7 +1155,7 @@ CENTRAL_CPU_FREQ()
 			else
 				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				# brain cooking prevention during call
-				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			fi;
 		fi;
 

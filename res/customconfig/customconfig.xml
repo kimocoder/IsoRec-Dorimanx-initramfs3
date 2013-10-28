@@ -245,7 +245,6 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
-			<spinnerItem name="zzmoove" value="zzmoove"/> 
 		</spinner>
 
 	</settingsPane>

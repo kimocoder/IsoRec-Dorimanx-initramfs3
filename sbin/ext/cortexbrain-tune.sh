@@ -1083,11 +1083,6 @@ CENTRAL_CPU_FREQ()
 		max_freq_limit_1_tmp="/dev/null";
 	fi;
 
-	local freq_limit_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_limit";
-	if [ ! -e $freq_limit_tmp ]; then
-		freq_limit_tmp="/dev/null";
-	fi;
-
 	if [ "$cortexbrain_cpu" == on ]; then
 		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 			MAX_FREQ=`echo $scaling_max_freq_oc`;
@@ -1109,7 +1104,6 @@ CENTRAL_CPU_FREQ()
 					echo "1000000" > $min_freq_limit_1_tmp;
 				fi;
 			else
-				echo "0" > $freq_limit_tmp;
 				if [ "$MAX_FREQ" -gt "1000000" ]; then
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1131,7 +1125,6 @@ CENTRAL_CPU_FREQ()
 					echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				fi;
 			else
-				echo "0" > $freq_limit_tmp;
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
@@ -1153,7 +1146,6 @@ CENTRAL_CPU_FREQ()
 			else
 				echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$scaling_max_suspend_freq" > $freq_limit_tmp;
 			fi;
 		elif [ "$state" == "sleep_call" ]; then
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
@@ -1162,12 +1154,6 @@ CENTRAL_CPU_FREQ()
 				# brain cooking prevention during call
 				echo "800000" > $max_freq_limit_0_tmp;
 				echo "800000" > $max_freq_limit_1_tmp;
-			elif [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
-				if [ "$tmp_min_freq" != "$standby_freq" ]; then
-					echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-				fi;
-				# brain cooking prevention during call
-				echo "800000" > $freq_limit_tmp;
 			else
 				if [ "$tmp_min_freq" != "$standby_freq" ]; then
 					echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;

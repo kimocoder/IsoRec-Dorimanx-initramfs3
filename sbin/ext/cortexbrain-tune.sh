@@ -258,45 +258,121 @@ fi;
 # CPU-TWEAKS
 # ==============================================================
 
-CPU_INTELLI_PLUG_TWEAKS()
+CPU_HOTPLUG_TWEAKS()
 {
+	local state="$1";
+
 	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-	local intelli_plug_active_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
 
-	if [ -e $intelli_plug_active_tmp ]; then
-		local IPA_CHECK=`cat $intelli_plug_active_tmp`;
+	# Intelli plug
+	if [ -e /sys/module/intelli_plug ]; then
+		local intelli_plug_active_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
+		local intelli_value_tmp=`cat /sys/module/intelli_plug/parameters/intelli_plug_active`;
+	else
+		intelli_plug_active_tmp="/dev/null";
+		intelli_value_tmp="/dev/null";
+	fi;
 
-		# Alucard hotplug
+	# Alucard hotplug
+	if [ -e /sys/devices/system/cpu/cpufreq/alucard_hotplug ]; then
 		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_enable";
-		local gov_check="0";
-		local lhotplug_enable="$hotplug_enable"; 
+		local alucard_value_tmp=`cat /sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_enable`;
+		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
+		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
+		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
+		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
+		local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
+		local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
+		local maxcoreslimit_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/maxcoreslimit";
+	else
+		hotplug_enable_tmp="/dev/null";
+		alucard_value_tmp="/dev/null";
+		cpu_up_rate_tmp="/dev/null";
+		cpu_down_rate_tmp="/dev/null";
+		hotplug_freq_fst_tmp="/dev/null";
+		hotplug_freq_snd_tmp="/dev/null";
+		up_load_tmp="/dev/null";
+		down_load_tmp="/dev/null";
+		maxcoreslimit_tmp="/dev/null";
+	fi;
 
-		if [ ! -e $hotplug_enable_tmp ]; then
-			hotplug_enable_tmp="/dev/null";
-		fi;
-
-		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ] && [ "$SYSTEM_GOVERNOR" != "zzmoove" ]; then
-			gov_check=1;
-			lhotplug_enable="0";
-		fi;
-
-		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$lhotplug_enable" -eq "1" ]; then
-				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] || [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
-					echo "0" > $intelli_plug_active_tmp;
-
-					log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
-				fi;
+	if [ "$hotplug_enable" -eq "1" ]; then
+		if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] || [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
+			#disable intelli_plug
+			if [ "$intelli_value_tmp" -eq "1" ]; then
+				echo "0" > $intelli_plug_active_tmp;
+				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+			fi;
+			#enable alucard_hotplug
+			if [ "$alucard_value_tmp" -eq "0" ]; then
+				echo "1" > $hotplug_enable_tmp;
+				log -p i -t $FILE_NAME "*** CPU_ALUCARD_PLUG ***: enabled";
 			fi;
 		else
-			if [ "$lhotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
+			#enable intelli_plug
+			if [ "$intelli_value_tmp" -eq "0" ]; then
 				echo "1" > $intelli_plug_active_tmp;
-
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: enabled";
 			fi;
+
+			#disable alucard_hotplug
+			if [ "$alucard_value_tmp" -eq "1" ]; then
+				echo "0" > $hotplug_enable_tmp;
+				log -p i -t $FILE_NAME "*** CPU_ALUCARD_PLUG ***: disabled";
+			fi;
 		fi;
-		echo "$lhotplug_enable" > $hotplug_enable_tmp;
+	else
+		#disable intelli_plug
+		if [ "$intelli_value_tmp" -eq "1" ]; then
+			echo "0" > $intelli_plug_active_tmp;
+			log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+		fi;
+		#disable alucard_hotplug
+		if [ "$alucard_value_tmp" -eq "1" ]; then
+			echo "0" > $hotplug_enable_tmp;
+			log -p i -t $FILE_NAME "*** CPU_ALUCARD_PLUG ***: disabled";
+		fi;
 	fi;
+
+	# sleep-settings
+	if [ "$state" == "sleep" ]; then
+		echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
+		echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
+		echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
+		echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
+		echo "$up_load_sleep" > $up_load_tmp;
+		echo "$down_load_sleep" > $down_load_tmp;
+		echo "1" > $maxcoreslimit_tmp;
+	# awake-settings
+	elif [ "$state" == "awake" ]; then
+		echo "$cpu_up_rate" > $cpu_up_rate_tmp;
+		echo "$cpu_down_rate" > $cpu_down_rate_tmp;
+		echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
+		echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
+		echo "$up_load" > $up_load_tmp;
+		echo "$down_load" > $down_load_tmp;
+		echo "2" > $maxcoreslimit_tmp;
+	fi;
+}
+
+TWEAK_HOTPLUG_ECO()
+{
+	local state="$1";
+
+	# Intelli plug
+	if [ -e /sys/module/intelli_plug ]; then
+		local eco_mode_active_tmp="/sys/module/intelli_plug/parameters/eco_mode_active";
+	else
+		eco_mode_active_tmp="/dev/null";
+	fi;
+
+	if [ "$state" == "sleep" ]; then
+		echo "1" > $eco_mode_active_tmp;
+	elif [ "$state" == "awake" ]; then
+		echo "0" > $eco_mode_active_tmp;
+	fi;
+
+	log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_ECO: $state ***";
 }
 
 CPU_GOV_TWEAKS()
@@ -305,24 +381,6 @@ CPU_GOV_TWEAKS()
 
 	if [ "$cortexbrain_cpu" == "on" ]; then
 		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-
-		if [ -e /sys/devices/system/cpu/cpufreq/alucard_hotplug ]; then
-			local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
-			local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
-			local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
-			local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
-			local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
-			local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
-			local maxcoreslimit_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/maxcoreslimit";
-		else
-			cpu_up_rate_tmp="/dev/null";
-			cpu_down_rate_tmp="/dev/null";
-			hotplug_freq_fst_tmp="/dev/null";
-			hotplug_freq_snd_tmp="/dev/null";
-			up_load_tmp="/dev/null";
-			down_load_tmp="/dev/null";
-			maxcoreslimit_tmp="/dev/null";
-		fi;
 
 		local sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
 		if [ ! -e $sampling_rate_tmp ]; then
@@ -512,15 +570,9 @@ CPU_GOV_TWEAKS()
 		# sleep-settings
 		if [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
-			echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
-			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
-			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
-			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
-			echo "$up_load_sleep" > $up_load_tmp;
-			echo "$down_load_sleep" > $down_load_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
 			echo "$sampling_up_factor_sleep" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor_sleep" > $sampling_down_factor_tmp;
@@ -537,7 +589,6 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
-			echo "1" > $maxcoreslimit_tmp;
 			echo "$force_freqs_step" > $force_freqs_step_tmp;
 			echo "$sampling_down_max_mom_sleep" > $sampling_down_max_mom_tmp;
 			echo "$sampling_down_mom_sens_sleep" > $sampling_down_mom_sens_tmp;
@@ -551,18 +602,13 @@ CPU_GOV_TWEAKS()
 			echo "$early_demand_sleep" > $early_demand_tmp;
 			echo "$grad_up_threshold_sleep" > $grad_up_threshold_tmp;
 			echo "$disable_hotplug_sleep" > $disable_hotplug_tmp;
+			CPU_HOTPLUG_TWEAKS "sleep";
 		# awake-settings
 		elif [ "$state" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
-			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
-			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
-			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
-			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
-			echo "$up_load" > $up_load_tmp;
-			echo "$down_load" > $down_load_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
 			echo "$sampling_up_factor" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
@@ -583,7 +629,6 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
-			echo "2" > $maxcoreslimit_tmp;
 			echo "$force_freqs_step" > $force_freqs_step_tmp;
 			echo "$sampling_down_max_mom" > $sampling_down_max_mom_tmp;
 			echo "$sampling_down_mom_sens" > $sampling_down_mom_sens_tmp;
@@ -597,9 +642,8 @@ CPU_GOV_TWEAKS()
 			echo "$early_demand" > $early_demand_tmp;
 			echo "$grad_up_threshold" > $grad_up_threshold_tmp;
 			echo "$disable_hotplug" > $disable_hotplug_tmp;
+			CPU_HOTPLUG_TWEAKS "awake";
 		fi;
-
-		CPU_INTELLI_PLUG_TWEAKS;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: $state ***: enabled";
 
@@ -1012,22 +1056,6 @@ VFS_CACHE_PRESSURE()
 	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: $state ***";
 }
 
-TWEAK_HOTPLUG_ECO()
-{
-	local state="$1";
-	local sys_eco="/sys/module/intelli_plug/parameters/eco_mode_active";
-
-	if [ -e $sys_eco ]; then
-		if [ "$state" == "awake" ]; then
-			echo "0" > $sys_eco;
-		elif [ "$state" == "sleep" ]; then
-			echo "1" > $sys_eco;
-		fi;
-
-		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_ECO: $state ***";
-	fi;
-}
-
 # ==============================================================
 # ECO-TWEAKS
 # ==============================================================
@@ -1038,18 +1066,13 @@ ECO_TWEAKS()
 		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
 			TWEAK_HOTPLUG_ECO "sleep";
 			CPU_GOV_TWEAKS "sleep";
-
 			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
 		else
-			CPU_GOV_TWEAKS "awake";
-
 			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
 		fi;
 
 		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
 	else
-		CPU_GOV_TWEAKS "awake";
-
 		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: disabled";
 		log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
 	fi;
@@ -1520,6 +1543,9 @@ AWAKE_MODE()
 		if [ "$WAS_IN_SLEEP_MODE" -eq "1" ] && [ "$USB_POWER" -eq "0" ]; then
 			ENABLEMASK "awake";
 			CPU_GOVERNOR "awake";
+			CPU_GOV_TWEAKS "awake";
+			TWEAK_HOTPLUG_ECO "awake";
+			MEGA_BOOST_CPU_TWEAKS;
 			LOGGER "awake";
 			UKSMCTL "awake";
 			MALI_TIMEOUT "wake_boost";
@@ -1528,14 +1554,14 @@ AWAKE_MODE()
 			NET "awake";
 			MOBILE_DATA "awake";
 			WIFI "awake";
-			MEGA_BOOST_CPU_TWEAKS;
 			IO_SCHEDULER "awake";
 			GESTURES "awake";
 			MOUNT_SD_CARD;
+
 			BOOST_DELAY;
+
 			ENTROPY "awake";
 			VFS_CACHE_PRESSURE "awake";
-			TWEAK_HOTPLUG_ECO "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
 			MALI_TIMEOUT "awake";
 			BUS_THRESHOLD "awake";
@@ -1548,7 +1574,9 @@ AWAKE_MODE()
 			MEGA_BOOST_CPU_TWEAKS;
 			MALI_TIMEOUT "wake_boost";
 			GESTURES "awake";
+
 			BOOST_DELAY;
+
 			MALI_TIMEOUT "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
 			ECO_TWEAKS;
@@ -1626,6 +1654,7 @@ SLEEP_MODE()
 		else
 			# Powered by USB
 			USB_POWER=1;
+			CPU_HOTPLUG_TWEAKS "awake";
 			log -p i -t $FILE_NAME "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else

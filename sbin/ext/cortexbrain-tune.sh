@@ -72,7 +72,7 @@ echo "1" > $MOBILE_HELPER_TMP;
 # ==============================================================
 IO_TWEAKS()
 {
-	if [ "$cortexbrain_io" == on ]; then
+	if [ "$cortexbrain_io" == "on" ]; then
 
 		local i="";
 
@@ -146,7 +146,7 @@ fi;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-	if [ "$cortexbrain_kernel_tweaks" == on ]; then
+	if [ "$cortexbrain_kernel_tweaks" == "on" ]; then
 		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
 		echo "30" > /proc/sys/kernel/panic;
@@ -155,7 +155,7 @@ KERNEL_TWEAKS()
 	else
 		echo "kernel_tweaks disabled";
 	fi;
-	if [ "$cortexbrain_memory" == on ]; then
+	if [ "$cortexbrain_memory" == "on" ]; then
 		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
@@ -173,7 +173,7 @@ fi;
 # ==============================================================
 SYSTEM_TWEAKS()
 {
-	if [ "$cortexbrain_system" == on ]; then
+	if [ "$cortexbrain_system" == "on" ]; then
 		setprop hwui.render_dirty_regions false;
 		setprop windowsmgr.max_events_per_sec 240;
 		setprop profiler.force_disable_err_rpt 1;
@@ -194,7 +194,7 @@ fi;
 # ==============================================================
 BATTERY_TWEAKS()
 {
-	if [ "$cortexbrain_battery" == on ]; then
+	if [ "$cortexbrain_battery" == "on" ]; then
 		# battery-calibration if battery is full
 		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		local CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
@@ -211,7 +211,7 @@ BATTERY_TWEAKS()
 
 		# LCD: power-reduce
 		if [ -e /sys/class/lcd/panel/power_reduce ]; then
-			if [ "$power_reduce" == on ]; then
+			if [ "$power_reduce" == "on" ]; then
 				echo "1" > /sys/class/lcd/panel/power_reduce;
 			else
 				echo "0" > /sys/class/lcd/panel/power_reduce;
@@ -266,6 +266,7 @@ CPU_INTELLI_PLUG_TWEAKS()
 	if [ -e $intelli_plug_active_tmp ]; then
 		local IPA_CHECK=`cat $intelli_plug_active_tmp`;
 
+		# Alucard hotplug
 		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_enable";
 		local gov_check="0";
 		local lhotplug_enable="$hotplug_enable"; 
@@ -302,7 +303,7 @@ CPU_GOV_TWEAKS()
 {
 	local state="$1";
 
-	if [ "$cortexbrain_cpu" == on ]; then
+	if [ "$cortexbrain_cpu" == "on" ]; then
 		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 		if [ -e /sys/devices/system/cpu/cpufreq/alucard_hotplug ]; then
@@ -567,7 +568,7 @@ CPU_GOV_TWEAKS()
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
 			echo "$down_differential" > $down_differential_tmp;
 			echo "$freq_step_at_min_freq" > $freq_step_at_min_freq_tmp;
-			if [ "$SYSTEM_GOVERNOR" == zzmoove ]; then
+			if [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
 				echo "5" > $freq_step_tmp;
 			else
 				echo "$freq_step" > $freq_step_tmp;
@@ -618,7 +619,7 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-	if [ "$cortexbrain_memory" == on ]; then
+	if [ "$cortexbrain_memory" == "on" ]; then
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
@@ -668,7 +669,7 @@ ENTROPY()
 # ==============================================================
 TCP_TWEAKS()
 {
-	if [ "$cortexbrain_tcp" == on ]; then
+	if [ "$cortexbrain_tcp" == "on" ]; then
 		echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 		echo "1" > /proc/sys/net/ipv4/tcp_rfc1337;
 		echo "1" > /proc/sys/net/ipv4/tcp_workaround_signed_windows;
@@ -706,7 +707,7 @@ TCP_TWEAKS()
 		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: disabled";
 	fi;
 
-	if [ "$cortexbrain_tcp_ram" == on ]; then
+	if [ "$cortexbrain_tcp_ram" == "on" ]; then
 		echo "4194304" > /proc/sys/net/core/wmem_max;
 		echo "4194304" > /proc/sys/net/core/rmem_max;
 		echo "20480" > /proc/sys/net/core/optmem_max;
@@ -734,7 +735,7 @@ fi;
 # ==============================================================
 FIREWALL_TWEAKS()
 {
-	if [ "$cortexbrain_firewall" == on ]; then
+	if [ "$cortexbrain_firewall" == "on" ]; then
 		# ping/icmp protection
 		echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 		echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
@@ -764,7 +765,7 @@ UKSMCTL()
 		uksm_run_tmp="/dev/null";
 	fi;
 
-	if [ "$cortexbrain_uksm_control" == on ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
+	if [ "$cortexbrain_uksm_control" == "on" ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
 		echo "1" > $uksm_run_tmp;
 		renice -n 10 -p `pidof uksmd`;
 
@@ -810,7 +811,7 @@ WIFI()
 	local state="$1";
 
 	if [ "$state" == "sleep" ]; then
-		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == "on" ]; then
 			if [ -e /sys/module/dhd/initstate ]; then
 				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" -eq "0" ]; then
 					WIFI_SET "off";
@@ -836,7 +837,7 @@ WIFI()
 			fi;
 		fi;
 	elif [ "$state" == "awake" ]; then
-		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == "on" ]; then
 			echo "1" > $WIFI_HELPER_TMP;
 			if [ `cat $WIFI_HELPER_AWAKE` -eq "1" ]; then
 				WIFI_SET "on";
@@ -876,7 +877,7 @@ MOBILE_DATA()
 {
 	local state="$1";
 
-	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
+	if [ "$cortexbrain_auto_tweak_mobile" == "on" ]; then
 		if [ "$state" == "sleep" ]; then
 			MOBILE_DATA_STATE;
 			if [ "$DATA_STATE_CHECK" -eq "1" ]; then
@@ -916,13 +917,13 @@ LOGGER()
 	local state="$1";
 
 	if [ "$state" == "awake" ]; then
-		if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
+		if [ "$android_logger" == "auto" ] || [ "$android_logger" == "debug" ]; then
 			echo "1" > /sys/module/logger/parameters/log_enabled;
-		elif [ "$android_logger" == disabled ]; then
+		elif [ "$android_logger" == "disabled" ]; then
 			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	elif [ "$state" == "sleep" ]; then
-		if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
+		if [ "$android_logger" == "auto" ] || [ "$android_logger" == "disabled" ]; then
 			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	fi;
@@ -935,13 +936,13 @@ GESTURES()
 	local state="$1";
 
 	if [ "$state" == "awake" ]; then
-		if [ "$gesture_tweak" == on ]; then
+		if [ "$gesture_tweak" == "on" ]; then
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 			nohup /sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	elif [ "$state" == "sleep" ]; then
-		if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != 0 ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != 0 ] || [ "$gesture_tweak" == off ]; then
+		if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != 0 ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != 0 ] || [ "$gesture_tweak" == "off" ]; then
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		fi;
@@ -953,7 +954,7 @@ GESTURES()
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
 {
-	if [ "$auto_mount_sd" == on ]; then
+	if [ "$auto_mount_sd" == "on" ]; then
 		echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
 		if [ -e /dev/block/vold/179:9 ]; then
 			echo "/dev/block/vold/179:9" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
@@ -1032,7 +1033,7 @@ TWEAK_HOTPLUG_ECO()
 # ==============================================================
 ECO_TWEAKS()
 {
-	if [ "$cortexbrain_eco" == on ]; then
+	if [ "$cortexbrain_eco" == "on" ]; then
 		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
 			TWEAK_HOTPLUG_ECO "sleep";
@@ -1083,7 +1084,7 @@ CENTRAL_CPU_FREQ()
 		max_freq_limit_1_tmp="/dev/null";
 	fi;
 
-	if [ "$cortexbrain_cpu" == on ]; then
+	if [ "$cortexbrain_cpu" == "on" ]; then
 		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 			MAX_FREQ=`echo $scaling_max_freq_oc`;
 		else
@@ -1172,7 +1173,7 @@ CENTRAL_CPU_FREQ()
 # boost CPU power for fast and no lag wakeup
 MEGA_BOOST_CPU_TWEAKS()
 {
-	if [ "$cortexbrain_cpu" == on ]; then
+	if [ "$cortexbrain_cpu" == "on" ]; then
 		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
@@ -1219,7 +1220,7 @@ IPV6()
 		local CISCO_VPN=0;
 	fi;
 
-	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" -eq "1" ]; then
+	if [ "$cortexbrain_ipv6" == "on" ] || [ "$CISCO_VPN" -eq "1" ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 		sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null;
 		local state="enabled";
@@ -1271,10 +1272,10 @@ NET()
 
 BLN_CORRECTION()
 {
-	if [ "$notification_enabled" == on ]; then
+	if [ "$notification_enabled" == "on" ]; then
 		echo "1" > /sys/class/misc/notification/notification_enabled;
 
-		if [ "$blnww" == off ]; then
+		if [ "$blnww" == "off" ]; then
 			if [ "$bln_switch" -eq "0" ]; then
 				/res/uci.sh bln_switch 0;
 			elif [ "$bln_switch" -eq "1" ]; then
@@ -1287,7 +1288,7 @@ BLN_CORRECTION()
 			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0 > /dev/null;
 		fi;
 
-		if [ "$dyn_brightness" == on ]; then
+		if [ "$dyn_brightness" == "on" ]; then
 			echo "0" > /sys/class/misc/notification/dyn_brightness;
 		fi;
 
@@ -1302,7 +1303,7 @@ BLN_CORRECTION()
 TOUCH_KEYS_CORRECTION()
 {
 	if [ "$force_disable" -eq 0 ]; then
-		if [ "$dyn_brightness" == on ]; then
+		if [ "$dyn_brightness" == "on" ]; then
 			echo "1" > /sys/class/misc/notification/dyn_brightness;
 		fi;
 
@@ -1317,7 +1318,7 @@ TOUCH_KEYS_CORRECTION()
 # if crond used, then give it root perent - if started by STweaks, then it will be killed in time
 CROND_SAFETY()
 {
-	if [ "$crontab" == on ]; then
+	if [ "$crontab" == "on" ]; then
 		pkill -f "crond";
 		/res/crontab_service/service.sh;
 
@@ -1372,7 +1373,7 @@ ENABLEMASK()
 
 IO_SCHEDULER()
 {
-	if [ "$cortexbrain_io" == on ]; then
+	if [ "$cortexbrain_io" == "on" ]; then
 
 		local state="$1";
 		local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
@@ -1409,7 +1410,7 @@ CPU_GOVERNOR()
 	local scaling_governor_tmp="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
 	local tmp_governor=`cat $scaling_governor_tmp`;
 
-	if [ "$cortexbrain_cpu" == on ]; then
+	if [ "$cortexbrain_cpu" == "on" ]; then
 		if [ "$state" == "awake" ]; then
 			if [ "$tmp_governor" != $scaling_governor ]; then
 				echo "$scaling_governor" > $scaling_governor_tmp;
@@ -1438,7 +1439,7 @@ SLIDE2WAKE_FIX()
 		SLIDE_STATE=`cat $tsp_slide2wake_call_tmp`;
 	fi;
 
-	if [ "$tsp_slide2wake" == on ]; then
+	if [ "$tsp_slide2wake" == "on" ]; then
 		if [ "$state" == "offline" ] && [ "$SLIDE_STATE" -eq "1" ]; then
 			echo "0" > $tsp_slide2wake_call_tmp;
 			log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
@@ -1595,7 +1596,7 @@ SLEEP_MODE()
 		SWAPPINESS;
 
 		# for devs use, if debug is on, then finish full sleep with usb connected
-		if [ "$android_logger" == debug ]; then
+		if [ "$android_logger" == "debug" ]; then
 			CHARGING=0;
 		else
 			CHARGING=`cat /sys/class/power_supply/battery/charging_source`;

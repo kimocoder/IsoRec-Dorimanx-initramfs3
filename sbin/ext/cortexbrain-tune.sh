@@ -274,14 +274,14 @@ CPU_INTELLI_PLUG_TWEAKS()
 			hotplug_enable_tmp="/dev/null";
 		fi;
 
-		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
+		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ] && [ "$SYSTEM_GOVERNOR" != "zzmoove" ]; then
 			gov_check=1;
 			lhotplug_enable="0";
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
 			if [ "$lhotplug_enable" -eq "1" ]; then
-				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] || [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
 					echo "0" > $intelli_plug_active_tmp;
 
 					log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
@@ -1065,22 +1065,27 @@ CENTRAL_CPU_FREQ()
 
 	local min_freq_limit_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_freq_limit_0";
 	if [ ! -e $min_freq_limit_0_tmp ]; then
-			min_freq_limit_0_tmp="/dev/null";
+		min_freq_limit_0_tmp="/dev/null";
 	fi;
 
 	local min_freq_limit_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_freq_limit_1";
 	if [ ! -e $min_freq_limit_1_tmp ]; then
-			min_freq_limit_1_tmp="/dev/null";
+		min_freq_limit_1_tmp="/dev/null";
 	fi;
 
 	local max_freq_limit_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/max_freq_limit_0";
 	if [ ! -e $max_freq_limit_0_tmp ]; then
-			max_freq_limit_0_tmp="/dev/null";
+		max_freq_limit_0_tmp="/dev/null";
 	fi;
 
 	local max_freq_limit_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/max_freq_limit_1";
 	if [ ! -e $max_freq_limit_1_tmp ]; then
-			max_freq_limit_1_tmp="/dev/null";
+		max_freq_limit_1_tmp="/dev/null";
+	fi;
+
+	local freq_limit_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_limit";
+	if [ ! -e $freq_limit_tmp ]; then
+		freq_limit_tmp="/dev/null";
 	fi;
 
 	if [ "$cortexbrain_cpu" == on ]; then
@@ -1104,6 +1109,7 @@ CENTRAL_CPU_FREQ()
 					echo "1000000" > $min_freq_limit_1_tmp;
 				fi;
 			else
+				echo "0" > $freq_limit_tmp;
 				if [ "$MAX_FREQ" -gt "1000000" ]; then
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1125,6 +1131,7 @@ CENTRAL_CPU_FREQ()
 					echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				fi;
 			else
+				echo "0" > $freq_limit_tmp;
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
@@ -1133,7 +1140,9 @@ CENTRAL_CPU_FREQ()
 				echo "$standby_freq" > $min_freq_limit_0_tmp;
 				echo "$standby_freq" > $min_freq_limit_1_tmp;
 			else
-				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				if [ "$tmp_min_freq" != "$standby_freq" ]; then
+					echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
 			fi;
 		elif [ "$state" == "sleep_freq" ]; then
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
@@ -1144,6 +1153,7 @@ CENTRAL_CPU_FREQ()
 			else
 				echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$scaling_max_suspend_freq" > $freq_limit_tmp;
 			fi;
 		elif [ "$state" == "sleep_call" ]; then
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
@@ -1152,8 +1162,16 @@ CENTRAL_CPU_FREQ()
 				# brain cooking prevention during call
 				echo "800000" > $max_freq_limit_0_tmp;
 				echo "800000" > $max_freq_limit_1_tmp;
+			elif [ "$SYSTEM_GOVERNOR" == "zzmoove" ]; then
+				if [ "$tmp_min_freq" != "$standby_freq" ]; then
+					echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
+				# brain cooking prevention during call
+				echo "800000" > $freq_limit_tmp;
 			else
-				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				if [ "$tmp_min_freq" != "$standby_freq" ]; then
+					echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
 				# brain cooking prevention during call
 				echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			fi;

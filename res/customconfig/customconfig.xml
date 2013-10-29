@@ -892,7 +892,7 @@
 			<spinnerItem name="10%" value="10"/> 
 			<spinnerItem name="20%" value="20"/> 
 			<spinnerItem name="30%" value="30"/> 
-			<spinnerItem name="40%" value="30"/> 
+			<spinnerItem name="40%" value="40"/> 
 			<spinnerItem name="50%" value="50"/> 
 		</spinner>
 

@@ -121,6 +121,13 @@
 			<spinnerItem name="zzmoove" value="zzmoove"/> 
 		</spinner>
 
+		<spinner description="CPU Governor Hot plugging Configuration. if this options is set to Disabled, Second core will always OFF or ON, depend on last condition, if set to Enabled Auto, cortex will choose the needed hotplug code for active GOV, or you can force using Alucard HotPlug code, or Inteli HotPlug code, best leave it AUTO (Default: Enabled Auto)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
+			<spinnerItem name="Disabled" value="0"/> 
+			<spinnerItem name="Enabled Auto" value="1"/> 
+			<spinnerItem name="Alucard HotPlug" value="2"/> 
+			<spinnerItem name="Inteli HotPlug" value="3"/> 
+		</spinner>
+
 		<button description="Use this button to push all new changes to GOV core in real time! The sleep tuning will be auto added on screen off, to screen off governor." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
 
 	</settingsPane>
@@ -147,23 +154,23 @@
 
 	<settingsPane description="Nightmare and Darkness Gov Configuration, see descriptions" name="NIGHTMARE | DARKNESS GOV CONFIGURATON">
 
-		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate X up_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled) (Default: 10)" name="cpu_up_rate" action="generic_cortex /tmp/cpu_up_rate" unit="int" min="1" reversed="false" step="1" max="40"/>
+		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate X up_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled) (Default: 5)" name="cpu_up_rate" action="generic_cortex /tmp/cpu_up_rate" unit="int" min="1" reversed="false" step="1" max="40"/>
 
-		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate X down_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled) (Default: 20)" name="cpu_down_rate" action="generic_cortex /tmp/cpu_down_rate" unit="int" min="1" reversed="false" step="1" max="40"/>
+		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate X down_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled) (Default: 10)" name="cpu_down_rate" action="generic_cortex /tmp/cpu_down_rate" unit="int" min="1" reversed="false" step="1" max="40"/>
 
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Only for Nightmare). (Default: 60%)" name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Only for Nightmare). (Default: 10%)" name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load big or equal inc_cpu_load: cpu scaled up. (Only for Nightmare). (Default: 70%)" name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Load big or equal inc_cpu_load: cpu scaled up. (Only for Nightmare). (Default: 10%)" name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Only for Nightmare). (Default: 50%)" name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Only for Nightmare). (Default: 20%)" name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="When current freq is greater than freq_for_responsiviness_max, freq_step_dec will be equal to freq_step_dec_at_max_freq. (Only for Nightmare). (Default: 1200.000 kHz)" name="freq_for_responsiveness_max" action="generic_cortex /tmp/freq_for_responsiveness_max" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Only for nightmare). (Default: 20%)" name="freq_step_at_min_freq" action="generic_cortex /tmp/freq_step_at_min_freq" unit="%" min="5" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Only for Nightmare). (Default: 30)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Only for Nightmare). (Default: 0)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load. (Only for Nightmare). (Default: 30)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load. (Only for Nightmare). (Default: 10)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load.  (Only for Nightmare). (Default: 10%)" name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
 
@@ -173,16 +180,11 @@
 
 		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Nightmare, Darkness). (Default: 0)" name="down_sf_step" action="generic_cortex /tmp/down_sf_step" unit="int" min="0" reversed="false" step="1" max="99"/>
 
-		<spinner description="Enabling or Disabling Nightmare Governor Hotplugging. If this options is set to Enabled, Intelli plug hotplugging will be disabled! It will be automatically restored when the chosen governor is different from Nightmare, Darkness or this option is set to disabled. (Default: Enabled)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
-			<spinnerItem name="Disabled" value="0"/> 
-			<spinnerItem name="Enabled" value="1"/> 
-		</spinner>
-
 		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq 1 1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 600.000 kHz)" name="hotplug_freq_fst" action="generic_cortex /tmp/hotplug_freq_fst" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 300.000 kHz)" name="hotplug_freq_snd" action="generic_cortex /tmp/hotplug_freq_snd" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. Value corresponding to 101 causes not HOTPLUG IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 65%)" name="up_load" action="generic_cortex /tmp/up_load" unit="%" min="10" reversed="false" step="1" max="101"/>
+		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. Value corresponding to 101 causes not HOTPLUG IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 50%)" name="up_load" action="generic_cortex /tmp/up_load" unit="%" min="10" reversed="false" step="1" max="101"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. Value corresponding to 101 causes immediately HOTPLUG OUT. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 30%)" name="down_load" action="generic_cortex /tmp/down_load" unit="%" min="0" reversed="false" step="1" max="101"/>
 

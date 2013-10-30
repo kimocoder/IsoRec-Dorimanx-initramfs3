@@ -1342,6 +1342,7 @@ TOUCH_KEYS_CORRECTION()
 
 		log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
 	else
+		echo "1" > /sys/devices/virtual/sec/sec_touchkey/force_disable;
 		log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: LEDS are forced OFF ***";
 	fi;
 }

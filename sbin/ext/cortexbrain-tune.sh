@@ -50,8 +50,8 @@ else
 fi;
 
 # set initial vm.dirty vales
-echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "2000" > /proc/sys/vm/dirty_expire_centisecs;
+echo "600" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # ==============================================================
 # FILES FOR VARIABLES || we need this for write variables from child-processes to parent
@@ -1064,19 +1064,6 @@ BUS_THRESHOLD()
 	log -p i -t $FILE_NAME "*** BUS_THRESHOLD: $state ***";
 }
 
-VFS_CACHE_PRESSURE()
-{
-	local state="$1";
-
-	if [ "$state" == "awake" ]; then
-		echo "60" > $sys_vfs_cache;
-	elif [ "$state" == "sleep" ]; then
-		echo "20" > $sys_vfs_cache;
-	fi;
-
-	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: $state ***";
-}
-
 # ==============================================================
 # ECO-TWEAKS
 # ==============================================================
@@ -1582,7 +1569,6 @@ AWAKE_MODE()
 			BOOST_DELAY;
 
 			ENTROPY "awake";
-			VFS_CACHE_PRESSURE "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
 			MALI_TIMEOUT "awake";
 			BUS_THRESHOLD "awake";
@@ -1667,7 +1653,6 @@ SLEEP_MODE()
 			MOBILE_DATA "sleep";
 			IPV6;
 			TWEAK_HOTPLUG_ECO "sleep";
-			VFS_CACHE_PRESSURE "sleep";
 
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 

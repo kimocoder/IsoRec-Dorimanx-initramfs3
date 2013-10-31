@@ -168,7 +168,7 @@
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Only for nightmare). (Default: 20%)" name="freq_step_at_min_freq" action="generic_cortex /tmp/freq_step_at_min_freq" unit="%" min="5" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Only for Nightmare). (Default: 0)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="50"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Only for Nightmare). (Default: 0)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load. (Only for Nightmare). (Default: 10)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
 

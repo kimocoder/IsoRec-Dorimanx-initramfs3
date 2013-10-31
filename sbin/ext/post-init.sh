@@ -121,7 +121,7 @@ fi;
 
 	VDD_INT=`cat /tmp/cpu-voltage_group | cut -c 24`;
 
-	if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ]; then
+	if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" != "1" ]; then
 		if [ "$VDD_INT" -eq "1" ]; then
 			$BB sh /res/uci.sh cpu-voltage 1 1450;
 			$BB sh /res/uci.sh cpu-voltage 2 1425;

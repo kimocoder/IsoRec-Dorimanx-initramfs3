@@ -6,9 +6,10 @@ stop;
 # set busybox location
 BB=/sbin/busybox
 
-mount -o remount,rw,nosuid,nodev /cache;
-mount -o remount,rw,nosuid,nodev /data;
-mount -o remount,rw /;
+$BB mount -o remount,rw,nosuid,nodev /cache;
+$BB mount -o remount,rw,nosuid,nodev /data;
+$BB mount -o remount,rw /;
+$BB mount -o remount,rw /lib/modules;
 
 # cleaning
 $BB rm -rf /cache/lost+found/* 2> /dev/null;
@@ -40,21 +41,14 @@ SDCARD_FIX()
 	$BB echo "FIXING STORAGE" >> $LOG_SDCARDS;
 
 	if [ -e /dev/block/mmcblk1p1 ]; then
-		chmod 777 /proc/self/mounts;
+		$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+		$BB cp /sbin/libexfat_utils.so /system/lib/;
+		$BB mount -t exfat /dev/block/mmcblk1p1 /mnt/tmp;
 		EXFAT_CHECK=`cat /proc/self/mounts | grep "/dev/block/mmcblk1p1" | wc -l`;
 		if [ "$EXFAT_CHECK" -eq "1" ]; then
-			if [ `cat /tmp/sammy_rom` -eq "0" ]; then
-				$BB mount -t exfat /dev/block/mmcblk1p1 /storage/sdcard1;
-			else
-				$BB mount -t exfat /dev/block/mmcblk1p1 /storage/extSdCard;
-			fi;
-			$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
-			cp /sbin/libexfat_utils.so /system/lib/;
-			/sbin/fsck.exfat -R /dev/block/mmcblk1p1 >> $LOG_SDCARDS;
-			$BB sed -i "s/dev_mount sdcard1 */#dev_mount sdcard1 /g" /system/etc/vold.fstab;
+			$BB sh -c "/sbin/fsck.exfat -R /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+			$BB umount /mnt/tmp;
 		else
-			$BB sed -i "s/#dev_mount sdcard1 */dev_mount sdcard1 /g" /system/etc/vold.fstab;
-			$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
 			$BB sh -c "$FIX_BINARY -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
 		fi;
 	else
@@ -82,7 +76,6 @@ if [ -e /tmp/wrong_kernel ]; then
 	fi;
 	sleep 15;
 	sync;
-	$BB rm -f /tmp/wrong_kernel;
 	reboot;
 else
 	if [ -e /system/bin/fsck_msdos ]; then

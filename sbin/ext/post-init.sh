@@ -8,6 +8,7 @@ $BB sh /sbin/ext/system_tune_on_init.sh;
 ROOT_RW()
 {
 	$BB mount -o remount,rw /;
+	$BB mount -o remount,rw /lib/modules;
 }
 ROOT_RW;
 
@@ -20,7 +21,6 @@ $BB chown -R root:root /lib;
 # oom and mem perm fix, we have auto adj code, do not allow changes in adj
 $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
 $BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
-$BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
 # protect init from oom
 echo "-1000" > /proc/1/oom_score_adj;
@@ -96,21 +96,15 @@ read_config;
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
-(
-	# Apps and ROOT Install
-	$BB sh /sbin/ext/install.sh;
-	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
-		/sbin/ext/root-run.sh;
-	fi;
-
-	# EFS Backup
-	$BB sh /sbin/ext/efs-backup.sh;
-)&
-
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
 	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
+
+(
+	# Apps and ROOT Install
+	$BB sh /sbin/ext/install.sh;
+)&
 
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks
@@ -195,8 +189,8 @@ fi;
 )&
 
 # busybox addons
-if [ -e /system/xbin/busybox ]; then
-	ln -s /system/xbin/busybox /sbin/ifconfig;
+if [ -e /system/xbin/busybox ] && [ ! -e /sbin/ifconfig ]; then
+	$BB ln -s /system/xbin/busybox /sbin/ifconfig;
 fi;
 
 ######################################
@@ -221,24 +215,13 @@ $BB chmod -R 755 /lib;
 	if [ "$eds_module" == "on" ]; then
 		$BB insmod /system/lib/modules/eds.ko;
 	fi;
-
-	# remount external sdcard if exist
-#	EXFAT_CHECK=`cat /proc/self/mounts | grep "exfat" | wc -l`;
-#	if [ "$EXFAT_CHECK" -eq "1" ]; then
-#		if [ `cat /tmp/sammy_rom` -eq "0" ]; then
-#			umount /storage/sdcard1;
-#			$BB mount -t exfat /dev/block/vold/179:9 /storage/sdcard1;
-#		else
-#			umount /storage/extSdCard
-#			$BB mount -t exfat /dev/block/vold/179:9 /storage/extSdCard;
-#		fi;
-#	fi;
-
 )&
 
 # some nice thing for dev
-$BB ln -s /sys/devices/system/cpu/cpu0/cpufreq /cpufreq;
-$BB ln -s /sys/devices/system/cpu/cpufreq/ /cpugov;
+if [ ! -e /cpufreq ]; then
+	$BB ln -s /sys/devices/system/cpu/cpu0/cpufreq /cpufreq;
+	$BB ln -s /sys/devices/system/cpu/cpufreq/ /cpugov;
+fi;
 
 # enable kmem interface for everyone by GM
 echo "0" > /proc/sys/kernel/kptr_restrict;
@@ -258,7 +241,11 @@ if [ ! -d /system/etc/init.d ]; then
 fi;
 
 (
-	JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
+	if [ -e /system/framework/framework-miui-res.apk ]; then
+		JBMIUI=1;
+	else
+		JBMIUI=0;
+	fi;
 	if [ "$init_d" == "on" ] || [ "$JBMIUI" -eq "1" ]; then
 		$BB sh /sbin/ext/run-init-scripts.sh;
 	fi;
@@ -284,30 +271,42 @@ mount -t tmpfs -o mode=0777,gid=1000 tmpfs /mnt/ntfs
 $BB sh /sbin/ext/properties.sh;
 
 ROOT_RW;
-echo "0" > /tmp/uci_done;
-chmod 666 /tmp/uci_done;
 
 (
-	# custom boot booster
 	COUNTER=0;
+	SD_COUNTER=0;
+	INT_SDCARD_MOUNT=0;
+	echo "0" > /tmp/uci_done;
+	$BB chmod 666 /tmp/uci_done;
+
 	while [ "`cat /tmp/uci_done`" != "1" ]; do
-		if [ "$COUNTER" -ge "10" ]; then
+		if [ "$COUNTER" -ge "12" ]; then
 			break;
 		fi;
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
 		sleep 10;
 		COUNTER=$(($COUNTER+1));
+		# max 2min
+	done;
+
+	while [ "$INT_SDCARD_MOUNT" == "0" ]; do
+		if [ "$SD_COUNTER" -ge "30" ]; then
+			break;
+		fi;
+		echo "Waiting For Internal SDcard to be mounted";
+		sleep 10;
+		INT_SDCARD_MOUNT=`$BB mount | grep "/storage/sdcard0" | wc -l`;
+		SD_COUNTER=$(($SD_COUNTER+1));
+		# max 5min
 	done;
 
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
 	if [ `cat /tmp/pri_rom_boot` -eq "1" ]; then
 		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
-			mount -o remount,rw /
-			mkdir /data_sec_rom;
-			chmod 777 /data_sec_rom;
+			$BB mkdir /data_sec_rom;
+			$BB chmod 777 /data_sec_rom;
 			FREE_LOOP=`losetup -f`;
 			if [ -e /sdcard/.secondrom/data.img ]; then
 				DATA_IMG=/sdcard/.secondrom/data.img
@@ -319,7 +318,7 @@ chmod 666 /tmp/uci_done;
 				FREE_LOOP=/dev/block/loop99
 			fi;
 			losetup $FREE_LOOP $DATA_IMG;
-			mount -t ext4 $FREE_LOOP /data_sec_rom;
+			$BB mount -t ext4 $FREE_LOOP /data_sec_rom;
 		else
 			echo "no sec data image found! abort."
 		fi;
@@ -335,11 +334,11 @@ chmod 666 /tmp/uci_done;
 
 	# ROOTBOX fix notification_wallpaper
 	if [ -e /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg ]; then
-		chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
+		$BB chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
 	fi;
 
 	# tweaks all the dm partitions that hold moved to sdcard apps
-	sleep 40;
+	sleep 30;
 	DM_COUNT=`ls -d /sys/block/dm* | wc -l`;
 	if [ "$DM_COUNT" -gt "0" ]; then
 		for d in $($BB mount | grep dm | cut -d " " -f1 | grep -v vold); do
@@ -377,7 +376,6 @@ chmod 666 /tmp/uci_done;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location
-	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 	pkill -f "com.gokhanmoral.stweaks.app";
 
@@ -389,37 +387,26 @@ chmod 666 /tmp/uci_done;
 	$BB rm -f /data/.siyah/booting;
 
 	# ###############################################################
-	# JB Low Sound Fix.
-	# ###############################################################
-
-	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
-
-	CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
-	if [ "$CM_AOKP_10_JB" -eq "1" ]; then
-		if [ "$jb_sound_fix" == "on" ]; then
-			input keyevent 25
-			input keyevent 25
-			input keyevent 25
-			input keyevent 24
-			input keyevent 24
-			input keyevent 24
-			input keyevent 24
-		fi;
-	else
-		echo "jb_sound_fix not used";
-	fi;
-
-	# ###############################################################
 	# I/O related tweaks
 	# ###############################################################
 
 	mount -o remount,rw /system;
-	mount -o remount,rw /;
-
 	# correct touch keys light, if rom mess user configuration
 	$BB sh /res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
 
 	# correct oom tuning, if changed by apps/rom
 	$BB sh /res/uci.sh oom_config_screen_on $oom_config_screen_on;
 	$BB sh /res/uci.sh oom_config_screen_off $oom_config_screen_off;
+)&
+
+(
+	# ROOT activation if supersu used
+	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
+		if [ "`pgrep -f "daemonsu" | wc -l`" -eq "0" ]; then
+			/system/xbin/daemonsu --auto-daemon &
+		fi;
+	fi;
+
+	# EFS Backup
+	$BB sh /sbin/ext/efs-backup.sh;
 )&

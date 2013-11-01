@@ -524,33 +524,31 @@ $BB insmod /system/lib/modules/exfat.ko;
 # mount external sdcard
 EXSDCARD;
 
+# one more time set "/" rw just for good sleep
+$BB mount -o remount,rw /;
+
 if [ -f /system/recovery.cpio.gz ]; then
-	$BB mount -o remount,rw /;
 	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
-
-# one more time set "/" rw just for good sleep
-$BB mount -t rootfs -o remount,rw rootfs;
 
 # ROM check init
 $BB echo "0" > /tmp/sammy_rom;
 $BB chmod 666 /tmp/sammy_rom;
 
+CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
+CM_AOKP_10_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | wc -l`;
+CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
+CM_AOKP_4_3_1_JB_PAC=`ls /system/framework/framework-pac.jar | wc -l`;
 JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
 JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
-JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
-CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
-CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
-CM_AOKP_4_3_1_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.1" | wc -l`;
-CM_AOKP_4_3_1_JB_PAC=`ls /system/framework/framework-pac.jar | wc -l`;
 
 USER_ACTIONS()
 {
-	if [ "$JBSAMMY" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; then
+	if [ "$JBSAMMY" -eq "1" ]; then
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
-	elif [ "$CM_AOKP_4_3_JB" -eq "1" ] || [ "$CM_AOKP_4_3_1_JB" -eq "1" ]; then
+	elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 		stop adbd;
 		$BB cp -a /sbin/adbd.cm10.2 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
@@ -648,7 +646,7 @@ $BB chmod -R 777 /tmp/;
 # Starting ROM choose and INIT config.
 ######################################
 
-if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; then
+if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 	if [ "$KERNEL_9X" -eq "1" ]; then
 		echo "wrong kernel" > /tmp/wrong_kernel;
 	fi;
@@ -671,7 +669,7 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; t
 
 	SECROM_FUNCTION_AOSP;
 
-elif [ "$CM_AOKP_4_3_JB" -eq "1" ] || [ "$CM_AOKP_4_3_1_JB" -eq "1" ]; then
+elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	# Injecting JB Modded by Dorimanx and Fusionjack, SUPER libsqlite!
 	POWER_SQL_JB_4_3;

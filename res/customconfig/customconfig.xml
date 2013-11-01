@@ -619,12 +619,6 @@
 
 <settingsTab name="Sound">
 
-	<settingsPane description="JB ROM low sound bug fix on boot" name="LOW SOUND FIX">
-
-		<checkbox description="Dirty Hack for JB ROM low Sound after boot. This patch will push the Vol DOWN and Vol UP for you on boot, and fix the low sound or ring every boot. You will see the volume slider moving! That is how it is fixed. Also it will reset the silence state if it was set before boot. If you have an ICS ROM, just ignore this, it will not be used, ICS ROMs do not have the bug. Fix is OFF by default, if you set ON, effect will be on boot only." name="JB low sound fix on boot" action="generic_cortex /tmp/jb_sound_fix" label="JB low sound fix on boot"/>
-
-	</settingsPane>
-
 	<settingsPane description="Master headphone gain (amplification) settings, thanks to Gokhanmoral!" name="Headphone Amplification">
 
 		<spinner description="Headphone amplifier level (0-3 which corresponds to 0dB, 1.5dB, 3dB, 6dB)" name="Headphone Amplifier" action="soundgasm_hp">

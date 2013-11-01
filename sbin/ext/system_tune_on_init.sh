@@ -3,6 +3,14 @@
 # stop ROM VM from booting!
 stop;
 
+# check if gps or battery failed to init on reboot
+GPS_ERR_CHECK=`dmesg | grep -w "k3g_probe : Device indentification failed" | wc -l`;
+BATTERY_CHECK=`dmesg | grep -w "max8997_muic_charger_cb: fail to get battery ps" | wc -l`;
+if [ "$GPS_ERR_CHECK" -eq "1" ] || [ "$BATTERY_CHECK" -eq "1" ]; then
+	sync;
+	reboot;
+fi;
+
 # set busybox location
 BB=/sbin/busybox
 

@@ -1116,13 +1116,12 @@ CENTRAL_CPU_FREQ()
 	fi;
 
 	if [ "$cortexbrain_cpu" == "on" ]; then
-		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-			MAX_FREQ=`echo $scaling_max_freq_oc`;
-		else
-			MAX_FREQ=`echo $scaling_max_freq`;
-		fi;
-
 		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -ge "0" ]; then
+			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+				MAX_FREQ=`echo $scaling_max_freq_oc`;
+			else
+				MAX_FREQ=`echo $scaling_max_freq`;
+			fi;
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
 				if [ "$MAX_FREQ" -gt "1000000" ]; then
 					echo "$MAX_FREQ" > $max_freq_limit_0_tmp;
@@ -1130,34 +1129,39 @@ CENTRAL_CPU_FREQ()
 					echo "$MAX_FREQ" > $min_freq_limit_0_tmp;
 					echo "$MAX_FREQ" > $min_freq_limit_1_tmp;
 				else
-					echo "1000000" > $max_freq_limit_0_tmp;
-					echo "1000000" > $max_freq_limit_1_tmp;
-					echo "1000000" > $min_freq_limit_0_tmp;
-					echo "1000000" > $min_freq_limit_1_tmp;
+					echo "1200000" > $max_freq_limit_0_tmp;
+					echo "1200000" > $max_freq_limit_1_tmp;
+					echo "1200000" > $min_freq_limit_0_tmp;
+					echo "1200000" > $min_freq_limit_1_tmp;
 				fi;
 			else
 				if [ "$MAX_FREQ" -gt "1000000" ]; then
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				else
-					echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-					echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+					echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+					echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				fi;
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
+			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+				WAKE_MAX_FREQ=`echo $scaling_max_freq_oc`;
+			else
+				WAKE_MAX_FREQ=`echo $scaling_max_freq`;
+			fi;
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
-				echo "$MAX_FREQ" > $max_freq_limit_0_tmp;
-				echo "$MAX_FREQ" > $max_freq_limit_1_tmp;
+				echo "$WAKE_MAX_FREQ" > $max_freq_limit_0_tmp;
+				echo "$WAKE_MAX_FREQ" > $max_freq_limit_1_tmp;
 				echo "$scaling_min_freq" > $min_freq_limit_0_tmp;
 				echo "$scaling_min_freq" > $min_freq_limit_1_tmp;
-				if [ "$tmp_max_freq" != "$MAX_FREQ" ]; then
-					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				if [ "$tmp_max_freq" != "$WAKE_MAX_FREQ" ]; then
+					echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				fi;
 				if [ "$tmp_min_freq" != "$scaling_min_freq" ]; then
 					echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				fi;
 			else
-				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
 		elif [ "$state" == "standby_freq" ]; then
@@ -1192,6 +1196,28 @@ CENTRAL_CPU_FREQ()
 				fi;
 				# brain cooking prevention during call
 				echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			fi;
+		else
+			# if wakeup boost is disabled 0 or -1
+			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+				WAKE_MAX_FREQ=$scaling_max_freq_oc;
+			else
+				WAKE_MAX_FREQ=$scaling_max_freq;
+			fi;
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				echo "$WAKE_MAX_FREQ" > $max_freq_limit_0_tmp;
+				echo "$WAKE_MAX_FREQ" > $max_freq_limit_1_tmp;
+				echo "$scaling_min_freq" > $min_freq_limit_0_tmp;
+				echo "$scaling_min_freq" > $min_freq_limit_1_tmp;
+				if [ "$tmp_max_freq" != "$WAKE_MAX_FREQ" ]; then
+					echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				fi;
+				if [ "$tmp_min_freq" != "$scaling_min_freq" ]; then
+					echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
+			else
+				echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
 		fi;
 

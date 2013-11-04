@@ -45,7 +45,12 @@ fi;
 # check if new SuperSU exist in kernel, and if Superuser installed, then replace with new SuperSu.
 NEW_SU=1;
 if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/su ]; then
-	NEW_SU=0;
+	SU_SIZE=`ls -la /system/xbin/su | cut -d " " -f19`;
+	if [ "$SU_SIZE" -ge "100452" ]; then
+		NEW_SU=0;
+	else
+		NEW_SU=1;
+	fi;
 fi;
 
 if [ "$install_root" == "on" ]; then
@@ -164,7 +169,7 @@ if [ "$install_root" == "on" ]; then
 			# kill superuser pid
 			pkill -f "com.noshufou.android.su";
 			pkill -f "eu.chinfire.supersu";
-			/sbin/ext/root-run.sh;
+			/system/xbin/daemonsu --auto-daemon &;
 		fi;
 	fi;
 fi;

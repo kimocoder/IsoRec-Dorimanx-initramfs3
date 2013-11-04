@@ -192,6 +192,9 @@ NEED_CHECK()
 # dalvik cache clean if asked
 DALVIK_CLEAN()
 {
+	DEVICE_DATA="/res/dev/data";
+	DIR_DATA="/data";
+
 	$BB mount -t ext4 $DEVICE_DATA $DIR_DATA;
 	$BB rm -f $DIR_DATA/dalvik-cache/*;
 	sync;

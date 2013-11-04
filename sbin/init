@@ -189,6 +189,15 @@ NEED_CHECK()
 	echo "1" > /tmp/need_check_part;
 }
 
+# dalvik cache clean if asked
+DALVIK_CLEAN()
+{
+	$BB mount -t ext4 $DEVICE_DATA $DIR_DATA;
+	$BB rm -f $DIR_DATA/dalvik-cache/*;
+	sync;
+	$BB umount $DIR_DATA;
+}
+
 # partition fix by forcing full scan and repair
 PARTITIONS_FIX()
 {
@@ -375,6 +384,11 @@ PARTITION_TUNING()
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+		DATA_DAMAGED_HARD=`$BB cat $LOG_DATA | $BB grep "RUN fsck MANUALLY" | wc -l`;
+		if [ "$DATA_DAMAGED_HARD" -eq "1" ]; then
+			DALVIK_CLEAN;
+			PARTITIONS_FIX;
+		fi;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_SYSTEM" >> $LOG_SYSTEM;
@@ -393,10 +407,7 @@ PARTITION_TUNING()
 		# reset the lock-file
 		$BB rm -f /mnt/tmp/.run_fs_check;
 
-		$BB mount -t ext4 $DEVICE_DATA $DIR_DATA;
-		$BB rm -f $DIR_DATA/dalvik-cache/*;
-		sync;
-		umount $DIR_DATA;
+		DALVIK_CLEAN;
 
 		# run partition fix by forcing full scan and repair
 		PARTITIONS_FIX;
@@ -548,10 +559,14 @@ USER_ACTIONS()
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
+		start adbd;
 	elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 		stop adbd;
 		$BB cp -a /sbin/adbd.cm10.2 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
+		start adbd;
+	else
+		start adbd;
 	fi;
 
 	# only if asked by user via stweaks
@@ -634,7 +649,7 @@ $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
 $BB sed -i "s/dalvik.vm.heapsize=[0-9a-zA-Z]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
 $BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=5m/g" /system/build.prop;
 $BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=48m/g" /system/build.prop;
-$BB sed -i "s/dalvik.vm.heapminfree=[0-9a-zA-Z]*/dalvik.vm.heapminfree=1m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapminfree=[0-9a-zA-Z]*/dalvik.vm.heapminfree=512k/g" /system/build.prop;
 
 # we can OC to 1.5Ghz.
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;

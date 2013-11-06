@@ -26,7 +26,6 @@ $BB rm -rf /sd-ext
 $BB mkdir /sd-ext
 $BB chmod -R 777 /sd-ext
 
-$BB rm -rf /storage
 $BB mkdir -p /storage/sdcard0
 $BB mkdir /storage/sdcard1
 $BB chmod -R 777 /storage

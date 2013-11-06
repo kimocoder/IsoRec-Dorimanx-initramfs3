@@ -17,7 +17,6 @@ on init
     mkdir /system
     mkdir /data
     mkdir /cache
-    mkdir /preload
 
     chown root shell /tmp
     chmod 0775 /tmp

@@ -45,8 +45,6 @@ $BB umount -l /storage/sdcard0;
 $BB umount -l /storage/sdcard1;
 
 # cleaning and rebuilding the /mnt and sdcards mounts folders
-$BB rm -rf /sdcard;
-$BB rm -rf /storage;
 $BB rm -rf /vendor;
 $BB rm -rf /tmp/*;
 mkdir -p /dev/block;
@@ -60,10 +58,8 @@ mkdir -p /mnt/tmp;
 mkdir -p /mnt/tmp2;
 mkdir -p /mnt/.secondrom;
 $BB chmod -R 755 /mnt/;
-mkdir /preload;
 chmod 0771 /preload;
 chown system:system /preload;
-mkdir /storage;
 $BB chmod -R 777 /storage;
 mknod /dev/graphics/fb0 c 29 0
 mknod /dev/input/event1 c 13 65

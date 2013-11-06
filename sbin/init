@@ -113,6 +113,11 @@ EXSDCARD()
 	fi;
 }
 
+NEXTBOOT=0;
+DEFAULTROM=0;
+SECONDROM=1;
+NOBOOTLOGO=0;
+
 # dual boot check and run
 if [ -e /mnt/tmp/.nextboot ]; then
 	NEXTBOOT=`cat /mnt/tmp/.nextboot`;
@@ -121,8 +126,7 @@ fi;
 if [ -e /mnt/tmp/.defaultrom ]; then
 	DEFAULTROM=`cat /mnt/tmp/.defaultrom`;
 fi;
-SECONDROM=1;
-NOBOOTLOGO=0;
+
 [ -f /preload/build.prop ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;

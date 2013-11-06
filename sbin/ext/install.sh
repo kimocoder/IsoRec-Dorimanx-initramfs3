@@ -169,7 +169,7 @@ if [ "$install_root" == "on" ]; then
 			# kill superuser pid
 			pkill -f "com.noshufou.android.su";
 			pkill -f "eu.chinfire.supersu";
-			/system/xbin/daemonsu --auto-daemon &;
+			/system/xbin/daemonsu --auto-daemon &
 		fi;
 	fi;
 fi;

@@ -12,10 +12,6 @@ fi;
 # mount root as rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
-# move boot binary to root
-$BB mv /boot/boot /;
-$BB chmod 755 /boot;
-
 if $BB grep -q bootmode=2 /proc/cmdline; then
 	# recovery mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;

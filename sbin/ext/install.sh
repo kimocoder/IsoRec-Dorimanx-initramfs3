@@ -91,7 +91,7 @@ if [ "$install_root" == "on" ]; then
 			$BB rm -f /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
 			$BB rm -f /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1;
 			$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
-			$BB rm -rf /data/data/eu.chinfire.supersu > /dev/null 2>&1;
+			$BB rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1;
 
 			if [ -e /system/chainfire/SuperSU.apk ]; then
 				$BB cp /system/chainfire/SuperSU.apk /system/app/;
@@ -168,7 +168,7 @@ if [ "$install_root" == "on" ]; then
 
 			# kill superuser pid
 			pkill -f "com.noshufou.android.su";
-			pkill -f "eu.chinfire.supersu";
+			pkill -f "eu.chainfire.supersu";
 			/system/xbin/daemonsu --auto-daemon &
 		fi;
 	fi;

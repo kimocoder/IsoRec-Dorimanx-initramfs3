@@ -3,11 +3,13 @@
 # by Gokhan Moral and Voku and Dorimanx and Alucard24
 
 # stop uci.sh from running all the PUSH Buttons in stweaks on boot
-mount -o remount,rw rootfs;
+mount -o remount,rw /;
 chown -R root:system /res/customconfig/actions/;
 chmod -R 6755 /res/customconfig/actions/;
 mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 chmod 6755 /res/no-push-on-boot/*;
+cp /res/misc_scripts/config_backup_restore /res/customconfig/actions/push-actions/;
+chmod 6755 /res/customconfig/actions/push-actions/config_backup_restore;
 
 UCI_PID=`pgrep "user_uci_test_run.sh"`;
 renice -n -15 -p $UCI_PID;

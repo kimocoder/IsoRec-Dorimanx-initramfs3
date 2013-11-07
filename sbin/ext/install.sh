@@ -7,7 +7,7 @@ read_defaults;
 read_config;
 
 $BB mount -o remount,rw /system;
-$BB mount -t rootfs -o remount,rw rootfs;
+$BB mount -o remount,rw /;
 
 cd /;
 

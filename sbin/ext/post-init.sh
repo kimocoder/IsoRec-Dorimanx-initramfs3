@@ -8,7 +8,6 @@ $BB sh /sbin/ext/system_tune_on_init.sh;
 ROOT_RW()
 {
 	$BB mount -o remount,rw /;
-	$BB mount -o remount,rw /lib/modules;
 }
 ROOT_RW;
 
@@ -196,8 +195,6 @@ fi;
 ######################################
 # Loading Modules
 ######################################
-$BB chmod -R 755 /lib;
-
 (
 	sleep 40;
 	# order of modules load is important
@@ -205,15 +202,29 @@ $BB chmod -R 755 /lib;
 #	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
 	if [ "$usbserial_module" == "on" ]; then
-		$BB insmod /system/lib/modules/usbserial.ko;
-		$BB insmod /system/lib/modules/ftdi_sio.ko;
-		$BB insmod /system/lib/modules/pl2303.ko;
+		if [ -e /system/lib/modules/usbserial.ko ]; then
+			$BB insmod /system/lib/modules/usbserial.ko;
+			$BB insmod /system/lib/modules/ftdi_sio.ko;
+			$BB insmod /system/lib/modules/pl2303.ko;
+		else
+			$BB insmod /lib/modules/usbserial.ko;
+			$BB insmod /lib/modules/ftdi_sio.ko;
+			$BB insmod /lib/modules/pl2303.ko;
+		fi;
 	fi;
 	if [ "$cifs_module" == "on" ]; then
-		$BB insmod /system/lib/modules/cifs.ko;
+		if [ -e /system/lib/modules/cifs.ko ]; then
+			$BB insmod /system/lib/modules/cifs.ko;
+		else
+			$BB insmod /lib/modules/cifs.ko;
+		fi;
 	fi;
 	if [ "$eds_module" == "on" ]; then
-		$BB insmod /system/lib/modules/eds.ko;
+		if [ -e /system/lib/modules/eds.ko ]; then
+			$BB insmod /system/lib/modules/eds.ko;
+		else
+			$BB insmod /lib/modules/eds.ko;
+		fi;
 	fi;
 )&
 

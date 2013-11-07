@@ -223,5 +223,5 @@ if [ ! -f /system/app/STweaks.apk ]; then
 	$BB chmod 644 /system/app/STweaks.apk;
 fi;
 
-$BB mount -t rootfs -o remount,rw rootfs;
+$BB mount -o remount,rw /;
 $BB mount -o remount,rw /system;

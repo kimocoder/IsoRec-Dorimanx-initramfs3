@@ -13,5 +13,7 @@ else
 	eval $evalcmd;
 	if [ -f /sys/class/misc/mali_control/staycount_control ]; then
 		echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3 $GPUSTAYCOUNT4 $GPUSTAYCOUNT5" > /sys/class/misc/mali_control/staycount_control;
+	else
+		echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3 $GPUSTAYCOUNT4 $GPUSTAYCOUNT5" > /dev/null;
 	fi;
 fi;

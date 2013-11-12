@@ -17,9 +17,9 @@ $BB chown -R root:root /res;
 $BB chown -R root:root /sbin;
 $BB chown -R root:root /lib;
 
-# oom and mem perm fix, we have auto adj code, do not allow changes in adj
-$BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
-$BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
+# oom and mem perm fix
+$BB chmod 666 /sys/module/lowmemorykiller/parameters/cost;
+$BB chmod 666 /sys/module/lowmemorykiller/parameters/adj;
 
 # protect init from oom
 echo "-1000" > /proc/1/oom_score_adj;

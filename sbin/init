@@ -543,6 +543,7 @@ CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
 CM_AOKP_10_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | wc -l`;
 CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
 CM_AOKP_4_3_1_JB_PAC=`ls /system/framework/framework-pac.jar | wc -l`;
+CM_AOKP_4_3_1_JB_BAM=`ls /system/framework/framework-bam.jar | wc -l`;
 JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
 JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
 
@@ -684,6 +685,8 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
 	if [ "$CM_AOKP_4_3_1_JB_PAC" -eq "1" ]; then
 		$BB cp -a res/misc/JellyB-CM-AOKP-PAC-4-3/* /;
+	elif [ "$CM_AOKP_4_3_1_JB_BAM" -eq "1" ]; then
+		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-3/* /;
 	fi;
 
 	SECROM_FUNCTION_AOSP;

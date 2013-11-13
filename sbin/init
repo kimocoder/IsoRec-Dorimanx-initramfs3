@@ -536,9 +536,6 @@ if [ -f /system/recovery.cpio.gz ]; then
 fi;
 
 # ROM check init
-$BB echo "0" > /tmp/sammy_rom;
-$BB chmod 666 /tmp/sammy_rom;
-
 CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
 CM_AOKP_10_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | wc -l`;
 CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
@@ -597,6 +594,7 @@ BOOTROM()
 {
 	USER_ACTIONS;
 	$BB rm -f /sbin/mount;
+	$BB chmod -R 777 /tmp/;
 	exec /sbin/init.samsung;
 }
 
@@ -666,7 +664,7 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 	if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
 		echo "172" > /sys/devices/virtual/sec/sec_key/set_homekey;
 	fi;
-	# for system_tune_on_init.sh and for res/crontab_service/service.sh
+	# for sbin/ext/install.sh and for res/crontab_service/service.sh
 	$BB echo "1" > /tmp/sammy_rom;
 
 	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
@@ -688,6 +686,8 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	elif [ "$CM_AOKP_4_3_1_JB_BAM" -eq "1" ]; then
 		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-3/* /;
 	fi;
+	# for sbin/ext/install.sh
+	echo "1" > /tmp/cm10.2-installed;
 
 	SECROM_FUNCTION_AOSP;
 
@@ -696,6 +696,7 @@ elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
 	POWER_SQL_JB;
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
+	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;

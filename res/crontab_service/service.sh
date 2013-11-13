@@ -5,7 +5,7 @@
 JELLY=0;
 JB_SAMMY=0;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
-if [ `cat /tmp/sammy_rom` -eq "1" ]; then
+if [ -e /tmp/sammy_rom ]; then
 	JB_SAMMY=1;
 fi;
 

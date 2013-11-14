@@ -50,7 +50,21 @@ fi;
 
 if [ -e /tmp/cm10.2-installed ] || [ -e /tmp/sammy_rom ]; then
 	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
-		NEW_SU=0;
+		if [ -e /system/chainfire/SuperSU.apk ]; then
+			sumd5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`;
+		else
+			sumd5sum=1;
+		fi;
+		if [ -e /system/chainfire/SuperSU.apk.md5 ]; then
+			sumd5sum_kernel=`cat /system/chainfire/SuperSU.apk.md5`;
+		else
+			sumd5sum_kernel=1;
+		fi;
+		if [ "$sumd5sum" -eq "$sumd5sum_kernel" ]; then
+			NEW_SU=0;
+		else
+			NEW_SU=1;
+		fi;
 	else
 		NEW_SU=1;
 	fi;
@@ -59,11 +73,11 @@ fi;
 if [ "$install_root" == "on" ]; then
 	if [ "$NEW_SU" -eq "0" ]; then
 		echo "SuperSU already exists";
-		chmod 6755 /system/xbin/su;
+		$BB chmod 6755 /system/xbin/su;
 		if [ -e /system/xbin/daemonsu ]; then
-			chmod 6755 /system/xbin/daemonsu;
+			$BB chmod 6755 /system/xbin/daemonsu;
 			if [ -e /system/etc/install-recovery.sh ]; then
-				rm -f /system/etc/install-recovery.sh;
+				$BB rm /system/etc/install-recovery.sh;
 			fi;
 		fi;
 	else
@@ -72,12 +86,12 @@ if [ "$install_root" == "on" ]; then
 		# clean su traces
 		$BB rm -f /system/bin/su > /dev/null 2>&1;
 		$BB rm -f /system/xbin/su > /dev/null 2>&1;
-		$BB rm -f /system/bin/.ext/su > /dev/null 2>&1;
-		$BB mkdir /system/xbin > /dev/null 2>&1;
 		$BB chmod 755 /system/xbin;
 		if [ ! -d /system/bin/.ext ]; then
 			$BB mkdir /system/bin/.ext;
 			$BB chmod 777 /system/bin/.ext;
+		else
+			$BB rm -f /system/bin/.ext/* > /dev/null 2>&1;
 		fi;
 
 		# clean super user old apps
@@ -97,7 +111,7 @@ if [ "$install_root" == "on" ]; then
 			$BB cp /system/chainfire/xbin/access /system/xbin/daemonsu;
 
 			if [ ! -e /system/xbin/chattr ]; then
-				cp /system/chainfire/xbin/chattr /system/xbin/;
+				$BB cp /system/chainfire/xbin/chattr /system/xbin/;
 				$BB chmod 6755 /system/xbin/chattr;
 			fi;
 			$BB chmod 6755 /system/xbin/su;
@@ -114,7 +128,7 @@ if [ "$install_root" == "on" ]; then
 			$BB cp /system_pri_rom/chainfire/xbin/access /system/xbin/daemonsu;
 
 			if [ ! -e /system/xbin/chattr ]; then
-				cp /system_pri_rom/chainfire/xbin/chattr /system/xbin/;
+				$BB cp /system_pri_rom/chainfire/xbin/chattr /system/xbin/;
 				$BB chmod 6755 /system/xbin/chattr;
 			fi;
 			$BB chmod 6755 /system/xbin/su;
@@ -134,15 +148,15 @@ if [ "$install_root" == "on" ]; then
 			$BB chmod 6755 /system/bin/.ext/su;
 
 			# extract super user app
-			$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
+			$BB cp -a /res/misc/payload/SuperSU.apk /system/app/;
 			$BB chown 0.0 /system/app/SuperSU.apk;
 			$BB chmod 644 /system/app/SuperSU.apk;
 		fi;
 
 		if [ ! -e /data/app/*chainfire?supersu.pr*.apk ]; then
 			if [ -e /data/system/chain_pro.apk_bkp ]; then
-				mv /data/system/chain_pro.apk_bkp /system/app/eu.chainfire.supersu.pro-1.apk;
-				chmod 644 /system/app/eu.chainfire.supersu.pro-1.apk;
+				$BB mv /data/system/chain_pro.apk_bkp /system/app/eu.chainfire.supersu.pro-1.apk;
+				$BB chmod 644 /system/app/eu.chainfire.supersu.pro-1.apk;
 			else
 				echo "no su pro" > /dev/null 2>&1;
 			fi;
@@ -207,14 +221,12 @@ if [ -f /system/app/STweaks.apk ]; then
 		$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 		$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 	fi;
-fi;
-
-if [ ! -f /system/app/STweaks.apk ]; then
+else
 	$BB rm -f /data/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;
 	$BB rm -r /data/data/com.gokhanmoral.*weak*/* > /dev/null 2>&1;
 	$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 	$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
-	$BB cp -a /res/misc/payload/STweaks.apk /system/app/STweaks.apk;
+	$BB cp -a /res/misc/payload/STweaks.apk /system/app/;
 	$BB chown 0.0 /system/app/STweaks.apk;
 	$BB chmod 644 /system/app/STweaks.apk;
 fi;

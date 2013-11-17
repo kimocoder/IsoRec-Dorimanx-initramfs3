@@ -1672,10 +1672,8 @@ if [ "$cortexbrain_background_process" -eq "1" ] && [ `pgrep -f "/sbin/ext/corte
 		# AWAKE State. all system ON
 		AWAKE_MODE;
 
-		sleep 2;
-
 		while [ "`cat /proc/sys/vm/vfs_cache_pressure`" != "20" ]; do
-			sleep 3;
+			sleep 2;
 		done;
 		# SLEEP state. All system to power save
 		SLEEP_MODE;

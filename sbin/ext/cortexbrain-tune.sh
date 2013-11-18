@@ -706,30 +706,6 @@ if [ "$apply_cpu" != "update" ]; then
 fi;
 
 # ==============================================================
-# ENTROPY-TWEAKS
-# ==============================================================
-
-ENTROPY()
-{
-	local state="$1";
-
-	if [ "$state" == "awake" ]; then
-		if [ "$PROFILE" != "battery" ] || [ "$PROFILE" != "extreme_battery" ]; then
-			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
-			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
-		else
-			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
-		fi;
-	elif [ "$state" == "sleep" ]; then
-		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
-	fi;
-
-	log -p i -t $FILE_NAME "*** ENTROPY ***: $state - $PROFILE";
-}
-
-# ==============================================================
 # TCP-TWEAKS
 # ==============================================================
 TCP_TWEAKS()
@@ -1551,7 +1527,6 @@ AWAKE_MODE()
 
 			BOOST_DELAY;
 
-			ENTROPY "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
 			MALI_TIMEOUT "awake";
 			BUS_THRESHOLD "awake";
@@ -1625,7 +1600,6 @@ SLEEP_MODE()
 			BUS_THRESHOLD "sleep";
 #			KERNEL_SCHED "sleep";
 			UKSMCTL "sleep";
-			ENTROPY "sleep";
 			NET "sleep";
 			WIFI "sleep";
 			BATTERY_TWEAKS;

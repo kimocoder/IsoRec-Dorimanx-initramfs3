@@ -1017,7 +1017,7 @@ MALI_TIMEOUT()
 	if [ "$state" == "awake" ]; then
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "$state" == "sleep" ]; then
-		echo "800" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "$state" == "wake_boost" ]; then
 		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;

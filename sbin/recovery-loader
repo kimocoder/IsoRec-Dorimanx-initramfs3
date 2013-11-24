@@ -71,6 +71,8 @@ if [ -e /dev/block/mmcblk1p1 ]; then
 		mkdir /sdcard/.android_secure;
 	fi;
 	$BB mount --bind /emmc-tmp/.android_secure /sdcard/.android_secure;
+	# for now set DEADLINE gov for External SD to fix file transfer via USB
+	echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
 fi;
 
 if [ -f /cache/recovery/command ]; then

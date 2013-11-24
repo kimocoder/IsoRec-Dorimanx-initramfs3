@@ -93,6 +93,11 @@ IO_TWEAKS()
 			echo "1" > $i/queue/rq_affinity;
 		done;
 
+		if [ -e /sys/block/mmcblk1/queue/scheduler ]; then
+			# for now set DEADLINE gov for External SD to fix file transfer via USB
+			echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
+		fi;
+
 		# This controls how many requests may be allocated
 		# in the block layer for read or write requests.
 		# Note that the total allocated number may be twice
@@ -1368,24 +1373,31 @@ IO_SCHEDULER()
 		local state="$1";
 		local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
 		local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
-		local tmp_scheduler="";
 		local new_scheduler="";
+		local tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
 
 		if [ ! -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
 
+		local ext_tmp_scheduler=`cat $sys_mmc1_scheduler_tmp`;
+
 		if [ "$state" == "awake" ]; then
 			new_scheduler=$scheduler;
+			if [ "$tmp_scheduler" != "$scheduler" ]; then
+				echo "$scheduler" > $sys_mmc0_scheduler_tmp;
+			fi;
+			if [ "$ext_tmp_scheduler" != "deadline" ]; then
+				echo "deadline" > $sys_mmc1_scheduler_tmp;
+			fi;
 		elif [ "$state" == "sleep" ]; then
-			new_scheduler=$sleep_scheduler
-		fi;
-
-		tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
-
-		if [ "$tmp_scheduler" != "$new_scheduler" ]; then
-			echo "$new_scheduler" > $sys_mmc0_scheduler_tmp;
-			echo "$new_scheduler" > $sys_mmc1_scheduler_tmp;
+			new_scheduler=$sleep_scheduler;
+			if [ "$tmp_scheduler" != "$sleep_scheduler" ]; then
+				echo "$sleep_scheduler" > $sys_mmc0_scheduler_tmp;
+			fi;
+			if [ "$ext_tmp_scheduler" != "$sleep_scheduler" ]; then
+				echo "$sleep_scheduler" > $sys_mmc1_scheduler_tmp;
+			fi;
 		fi;
 
 		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state - $new_scheduler ***: done";

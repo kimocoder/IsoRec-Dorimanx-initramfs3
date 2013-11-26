@@ -73,7 +73,7 @@ fi;
 
 # reset profiles auto trigger to be used by kernel ADMIN, in case of need, if new value added in default profiles
 # just set numer $RESET_MAGIC + 1 and profiles will be reset one time on next boot with new kernel.
-RESET_MAGIC=5;
+RESET_MAGIC=6;
 if [ ! -e /data/.siyah/reset_profiles ]; then
 	echo "0" > /data/.siyah/reset_profiles;
 fi;
@@ -245,9 +245,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 nohup /sbin/ext/cortexbrain-tune.sh;
 CORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 echo "-900" > /proc/$CORTEX/oom_score_adj;
-
-# enable screen color mode
-echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then

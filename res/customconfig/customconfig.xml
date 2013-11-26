@@ -547,19 +547,9 @@
 
 	</settingsPane>
 
-	<settingsPane description="Settings for screen color by user manual input" name="Screen color menu">
-
-		<button description="Push to reset screen color to default" name="Reset color to default" action="push-actions/color_to_default 1" label="Default Color"/>
-
-		<seekBar description="Sets screen BLUE color scale. (Default: 127)" name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" unit="BLUE" min="78" reversed="false" step="1" max="178"/>
-
-		<seekBar description="Sets screen RED color scale. (Default: 127)" name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" unit="RED" min="78" reversed="false" step="1" max="178"/>
+	<settingsPane description="Other Settings" name="Other Settings">
 
 		<checkbox description="mDNIe sharpness tweaks from hardcore. Requires reboot to be effective." name="mDNIe sharpness tweaks by GM!" action="generic01 /tmp/mdniemod" label="mDNIe Sharpness Tweaks"/>
-
-	</settingsPane>
-
-	<settingsPane description="Other Settings" name="Other Settings">
 
 		<seekBar description="User adjustable gamma shift. (Default: 0)" name="Gamma shift" action="generic /sys/class/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
 

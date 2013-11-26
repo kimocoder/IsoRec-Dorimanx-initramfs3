@@ -197,7 +197,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="ZZMOOVE Gov Configuration, see descriptions" name="ZZMOOVE GOV CONFIGURATON">
+	<settingsPane description="ZZMANX Gov Configuration, see descriptions" name="ZZMANX GOV CONFIGURATON">
 
 		<seekBar description="Max sampling down factor which should be set by momentum (0 disable momentum, possible range from sampling_down_factor up to 100000. (Default: 0)" name="sampling_down_max_mom" action="generic_cortex /tmp/sampling_down_max_mom" unit="int" min="0" reversed="false" step="10" max="100000"/>
 
@@ -309,7 +309,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="ZZMOOVE Gov Configuration, see descriptions" name="ZZMOOVE GOV CONFIGURATON">
+	<settingsPane description="ZZMANX Gov Configuration, see descriptions" name="ZZMANX GOV CONFIGURATON">
 
 		<seekBar description="Max sampling down factor which should be set by momentum (0 disable momentum, possible range from sampling_down_factor up to 100000. (Default: 0)" name="sampling_down_max_mom_sleep" action="generic_cortex /tmp/sampling_down_max_mom_sleep" unit="int" min="0" reversed="false" step="10" max="100000"/>
 

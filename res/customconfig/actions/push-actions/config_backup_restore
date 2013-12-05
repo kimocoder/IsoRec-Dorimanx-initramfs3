@@ -14,10 +14,10 @@ fi;
 
 case "${config_backup_restore}" in
 	3)
-		cp -a /res/customconfig/battery.profile /data/.siyah/;
-		echo "battery" > /data/.siyah/.active.profile;
 		(
 			if [ `pgrep -f "push-actions/config_backup_restore" |  wc -l` -lt "5" ]; then
+				cp -a /res/customconfig/battery.profile /data/.siyah/;
+				echo "battery" > /data/.siyah/.active.profile;
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
 				$BB sh /res/user_uci_test_run.sh > /dev/null;
@@ -25,51 +25,47 @@ case "${config_backup_restore}" in
 		)&
 	;;
 	4)
-		cp -a /res/customconfig/default.profile /data/.siyah/;
-		echo "default" > /data/.siyah/.active.profile;
 		(
 			if [ `pgrep -f "push-actions/config_backup_restore" |  wc -l` -lt "5" ]; then
+				cp -a /res/customconfig/default.profile /data/.siyah/;
+				echo "default" > /data/.siyah/.active.profile;
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will will restart with new settings.";
 				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
-
 		)&
 	;;
 	5)
-		cp -a /res/customconfig/performance.profile /data/.siyah/;
-		echo "performance" > /data/.siyah/.active.profile;
 		(
 			if [ `pgrep -f "push-actions/config_backup_restore" |  wc -l` -lt "5" ]; then
+				cp -a /res/customconfig/performance.profile /data/.siyah/;
+				echo "performance" > /data/.siyah/.active.profile;
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
 				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
-
 		)&
 	;;
 	6)
-		cp -a /res/customconfig/extreme_battery.profile /data/.siyah/;
-		echo "extreme_battery" > /data/.siyah/.active.profile;
 		(
 			if [ `pgrep -f "push-actions/config_backup_restore" |  wc -l` -lt "5" ]; then
+				cp -a /res/customconfig/extreme_battery.profile /data/.siyah/;
+				echo "extreme_battery" > /data/.siyah/.active.profile;
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
 				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
-
 		)&
 	;;
 	7)
-		cp -a /res/customconfig/extreme_performance.profile /data/.siyah/;
-		echo "extreme_performance" > /data/.siyah/.active.profile;
 		(
 			if [ `pgrep -f "push-actions/config_backup_restore" |  wc -l` -lt "5" ]; then
+				cp -a /res/customconfig/extreme_performance.profile /data/.siyah/;
+				echo "extreme_performance" > /data/.siyah/.active.profile;
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
 				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
-
 		)&
 	;;
 	*)

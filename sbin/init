@@ -653,6 +653,12 @@ $BB chmod -R 777 /tmp/;
 # Starting ROM choose and INIT config.
 ######################################
 
+# check CLASSPATH files.
+CLEAN_MSIM()
+{
+	$BB sed -i "s/:[/]system[/]framework[/]telephony-msim.jar//g" /init.rc;
+}
+
 if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 	if [ "$KERNEL_9X" -eq "1" ]; then
 		echo "wrong kernel" > /tmp/wrong_kernel;
@@ -688,6 +694,10 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	fi;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
+
+	if [ ! -e /system/framework/telephony-msim.jar ]; then
+		CLEAN_MSIM;
+	fi;
 
 	SECROM_FUNCTION_AOSP;
 

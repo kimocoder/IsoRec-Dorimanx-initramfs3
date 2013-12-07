@@ -27,12 +27,12 @@ echo "-1000" > /proc/1/oom_score_adj;
 # set sysrq to 2 = enable control of console logging level as with CM-KERNEL
 echo "2" > /proc/sys/kernel/sysrq;
 
-PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
+PIDOFINIT=$(pgrep -f "/sbin/ext/post-init.sh");
 for i in $PIDOFINIT; do
-	echo "-600" > /proc/${i}/oom_score_adj;
+	echo "-600" > /proc/"$i"/oom_score_adj;
 done;
 
-if [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
+if [ "$(cat /tmp/sec_rom_boot)" -eq "1" ]; then
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /efs;
 	$BB mount -o remount,rw /
@@ -59,10 +59,10 @@ if [ ! -d /data/.siyah ]; then
 fi;
 
 # get rid of siyah in kernel name
-CHECK_VER=`cat /proc/sys/kernel/osrelease`;
+CHECK_VER=$(cat /proc/sys/kernel/osrelease);
 echo "$CHECK_VER" > /data/.siyah/check_ver;
 sed -i "s/-Siyah*//g" /data/.siyah/check_ver;
-CHANGE_VER=`cat /data/.siyah/check_ver`;
+CHANGE_VER=$(cat /data/.siyah/check_ver);
 echo "$CHANGE_VER" > /proc/sys/kernel/osrelease;
 rm /data/.siyah/check_ver;
 
@@ -77,7 +77,7 @@ RESET_MAGIC=7;
 if [ ! -e /data/.siyah/reset_profiles ]; then
 	echo "0" > /data/.siyah/reset_profiles;
 fi;
-if [ `cat /data/.siyah/reset_profiles` -eq "$RESET_MAGIC" ]; then
+if [ "$(cat /data/.siyah/reset_profiles)" -eq "$RESET_MAGIC" ]; then
 	echo "no need to reset profiles";
 else
 	rm -f /data/.siyah/*.profile;
@@ -116,7 +116,7 @@ fi;
 	dmesg | grep VDD_INT | cut -c 19-50 > /tmp/cpu-voltage_group;
 	$BB chmod 777 /tmp/cpu-voltage_group;
 
-	VDD_INT=`cat /tmp/cpu-voltage_group | cut -c 24`;
+	VDD_INT=$(cat /tmp/cpu-voltage_group | cut -c 24);
 
 	if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ]; then
 		if [ "$VDD_INT" -eq "1" ]; then
@@ -243,8 +243,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh;
-CORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
-echo "-900" > /proc/$CORTEX/oom_score_adj;
+CORTEX=$(pgrep -f "/sbin/ext/cortexbrain-tune.sh");
+echo "-900" > /proc/"$CORTEX"/oom_score_adj;
 
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
@@ -291,7 +291,7 @@ ROOT_RW;
 	echo "0" > /tmp/uci_done;
 	$BB chmod 666 /tmp/uci_done;
 
-	while [ "`cat /tmp/uci_done`" != "1" ]; do
+	while [ "$(cat /tmp/uci_done)" != "1" ]; do
 		if [ "$COUNTER" -ge "12" ]; then
 			break;
 		fi;
@@ -299,7 +299,7 @@ ROOT_RW;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
 		sleep 10;
-		COUNTER=$(($COUNTER+1));
+		COUNTER=$((COUNTER+1));
 		# max 2min
 	done;
 
@@ -309,17 +309,17 @@ ROOT_RW;
 		fi;
 		echo "Waiting For Internal SDcard to be mounted";
 		sleep 10;
-		INT_SDCARD_MOUNT=`$BB mount | grep "/storage/sdcard0" | wc -l`;
-		SD_COUNTER=$(($SD_COUNTER+1));
+		INT_SDCARD_MOUNT=$(BB mount | grep "/storage/sdcard0" | wc -l);
+		SD_COUNTER=$((SD_COUNTER+1));
 		# max 5min
 	done;
 
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
-	if [ `cat /tmp/pri_rom_boot` -eq "1" ]; then
+	if [ "$(cat /tmp/pri_rom_boot)" -eq "1" ]; then
 		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
 			$BB mkdir /data_sec_rom;
 			$BB chmod 777 /data_sec_rom;
-			FREE_LOOP=`losetup -f`;
+			FREE_LOOP=$(losetup -f);
 			if [ -e /sdcard/.secondrom/data.img ]; then
 				DATA_IMG=/sdcard/.secondrom/data.img
 			elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
@@ -351,22 +351,22 @@ ROOT_RW;
 
 	# tweaks all the dm partitions that hold moved to sdcard apps
 	sleep 30;
-	DM_COUNT=`ls -d /sys/block/dm* | wc -l`;
+	DM_COUNT=$(find /sys/block/dm* | wc -l);
 	if [ "$DM_COUNT" -gt "0" ]; then
 		for d in $($BB mount | grep dm | cut -d " " -f1 | grep -v vold); do
-			$BB mount -o remount,ro,noauto_da_alloc $d;
+			$BB mount -o remount,ro,noauto_da_alloc "$d";
 		done;
 
-		DM=`ls -d /sys/block/dm*`;
+		DM=$(find /sys/block/dm*);
 		for i in ${DM}; do
-			echo "0" > ${i}/queue/rotational;
-			echo "0" > ${i}/queue/iostats;
+			echo "0" > "$i"/queue/rotational;
+			echo "0" > "$i"/queue/iostats;
 		done;
 	fi;
 
 	# script finish here, so let me know when
-        echo "Done Booting" > /data/dm-boot-check;
-        date >> /data/dm-boot-check;
+	echo "Done Booting" > /data/dm-boot-check;
+	date >> /data/dm-boot-check;
 )&
 
 (
@@ -382,8 +382,8 @@ ROOT_RW;
 	chmod 777 /data/.siyah/booting;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	nohup $BB sh /res/uci.sh restore;
-	UCI_PID=`pgrep -f "/res/uci.sh"`;
-	echo "-800" > /proc/$UCI_PID/oom_score_adj;
+	UCI_PID=$(pgrep -f "/res/uci.sh");
+	echo "-800" > /proc/"$UCI_PID"/oom_score_adj;
 	ROOT_RW;
 	echo "1" > /tmp/uci_done;
 
@@ -392,7 +392,7 @@ ROOT_RW;
 	pkill -f "com.gokhanmoral.stweaks.app";
 
 	# change USB mode MTP or Mass Storage
-	$BB sh /res/uci.sh usb-mode ${usb_mode};
+	$BB sh /res/uci.sh usb-mode "$usb_mode";
 
 	# update cpu tunig after profiles load
 	$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
@@ -404,17 +404,17 @@ ROOT_RW;
 
 	mount -o remount,rw /system;
 	# correct touch keys light, if rom mess user configuration
-	$BB sh /res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
+	$BB sh /res/uci.sh generic /sys/class/misc/notification/led_timeout_ms "$led_timeout_ms";
 
 	# correct oom tuning, if changed by apps/rom
-	$BB sh /res/uci.sh oom_config_screen_on $oom_config_screen_on;
-	$BB sh /res/uci.sh oom_config_screen_off $oom_config_screen_off;
+	$BB sh /res/uci.sh oom_config_screen_on "$oom_config_screen_on";
+	$BB sh /res/uci.sh oom_config_screen_off "$oom_config_screen_off";
 )&
 
 (
 	# ROOT activation if supersu used
 	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
-		if [ "`pgrep -f "daemonsu" | wc -l`" -eq "0" ]; then
+		if [ "$(pgrep -f "daemonsu" | wc -l)" -eq "0" ]; then
 			/system/xbin/daemonsu --auto-daemon &
 		fi;
 	fi;

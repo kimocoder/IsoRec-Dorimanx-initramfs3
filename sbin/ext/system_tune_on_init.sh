@@ -4,8 +4,8 @@
 stop;
 
 # check if gps or battery failed to init on reboot
-GPS_ERR_CHECK=`dmesg | grep -w "k3g_probe : Device indentification failed" | wc -l`;
-BATTERY_CHECK=`dmesg | grep -w "max8997_muic_charger_cb: fail to get battery ps" | wc -l`;
+GPS_ERR_CHECK=$(dmesg | grep -w "k3g_probe : Device indentification failed" | wc -l);
+BATTERY_CHECK=$(dmesg | grep -w "max8997_muic_charger_cb: fail to get battery ps" | wc -l);
 if [ "$GPS_ERR_CHECK" -eq "1" ] || [ "$BATTERY_CHECK" -eq "1" ]; then
 	sync;
 	reboot;
@@ -52,7 +52,7 @@ SDCARD_FIX()
 		$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
 		$BB cp /sbin/libexfat_utils.so /system/lib/;
 		$BB mount -t exfat /dev/block/mmcblk1p1 /mnt/tmp;
-		EXFAT_CHECK=`cat /proc/self/mounts | grep "/dev/block/mmcblk1p1" | wc -l`;
+		EXFAT_CHECK=$(cat /proc/self/mounts | grep "/dev/block/mmcblk1p1" | wc -l);
 		if [ "$EXFAT_CHECK" -eq "1" ]; then
 			$BB sh -c "/sbin/fsck.exfat -R /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
 			$BB umount /mnt/tmp;

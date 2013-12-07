@@ -51,12 +51,12 @@ fi;
 if [ -e /tmp/cm10.2-installed ] || [ -e /tmp/sammy_rom ]; then
 	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
 		if [ -e /system/chainfire/SuperSU.apk ]; then
-			sumd5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`;
+			sumd5sum=$($BB md5sum /system/app/SuperSU.apk | $BB awk "{print $1}");
 		else
 			sumd5sum=1;
 		fi;
 		if [ -e /system/chainfire/SuperSU.apk.md5 ]; then
-			sumd5sum_kernel=`cat /system/chainfire/SuperSU.apk.md5`;
+			sumd5sum_kernel=$(cat /system/chainfire/SuperSU.apk.md5);
 		else
 			sumd5sum_kernel=1;
 		fi;
@@ -205,7 +205,7 @@ if [ -f /system/app/Extweaks.apk ] || [ -f /data/app/com.darekxan.extweaks.ap*.a
 	$BB rm -f /data/dalvik-cache/*com.darekxan.extweaks.app* > /dev/null 2>&1;
 fi;
 
-STWEAKS_CHECK=`$BB find /data/app/ -name com.gokhanmoral.stweaks* | wc -l`;
+STWEAKS_CHECK=$($BB find /data/app/ -name com.gokhanmoral.stweaks* | wc -l);
 
 if [ "$STWEAKS_CHECK" -eq "1" ]; then
 	$BB rm -f /data/app/com.gokhanmoral.stweaks* > /dev/null 2>&1;
@@ -213,8 +213,8 @@ if [ "$STWEAKS_CHECK" -eq "1" ]; then
 fi;
 
 if [ -f /system/app/STweaks.apk ]; then
-	stmd5sum=`$BB md5sum /system/app/STweaks.apk | $BB awk '{print $1}'`
-	stmd5sum_kernel=`cat /res/stweaks_md5`;
+	stmd5sum=$($BB md5sum /system/app/STweaks.apk | $BB awk "{print $1}");
+	stmd5sum_kernel=$(cat /res/stweaks_md5);
 	if [ "$stmd5sum" != "$stmd5sum_kernel" ]; then
 		$BB rm -f /system/app/STweaks.apk > /dev/null 2>&1;
 		$BB rm -f /data/data/com.gokhanmoral.stweaks*/* > /dev/null 2>&1;

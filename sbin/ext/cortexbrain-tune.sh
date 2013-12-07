@@ -1039,7 +1039,7 @@ BUS_THRESHOLD()
 	elif [ "$state" == "sleep" ]; then
 		echo "$busfreq_up_threshold_sleep" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "$state" == "wake_boost" ]; then
-		echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
 
 	log -p i -t "$FILE_NAME" "*** BUS_THRESHOLD: $state ***";

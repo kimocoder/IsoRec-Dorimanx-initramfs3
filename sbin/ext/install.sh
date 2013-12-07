@@ -221,6 +221,8 @@ if [ -f /system/app/STweaks.apk ]; then
 		$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 		$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 		$BB cp /res/misc/payload/STweaks.apk /system/app/;
+		$BB chown 0.0 /system/app/STweaks.apk;
+		$BB chmod 644 /system/app/STweaks.apk;
 	fi;
 else
 	$BB rm -f /data/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;

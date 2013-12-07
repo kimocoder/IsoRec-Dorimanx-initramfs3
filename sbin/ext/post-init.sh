@@ -104,10 +104,8 @@ if [ "$mdniemod" == "on" ]; then
 	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
-(
-	# Apps and ROOT Install
-	$BB sh /sbin/ext/install.sh;
-)&
+# Apps and ROOT Install
+$BB sh /sbin/ext/install.sh;
 
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks

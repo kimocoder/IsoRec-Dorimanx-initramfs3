@@ -2,6 +2,7 @@
 cd /;
 
 BB=/sbin/busybox
+$BB chmod 6755 $BB;
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;

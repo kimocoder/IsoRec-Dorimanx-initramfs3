@@ -285,7 +285,6 @@ ROOT_RW;
 (
 	COUNTER=0;
 	SD_COUNTER=0;
-	INT_SDCARD_MOUNT=0;
 	echo "0" > /tmp/uci_done;
 	$BB chmod 666 /tmp/uci_done;
 
@@ -301,13 +300,12 @@ ROOT_RW;
 		# max 2min
 	done;
 
-	while [ "$INT_SDCARD_MOUNT" == "0" ]; do
-		if [ "$SD_COUNTER" -ge "30" ]; then
+	while [ "$($BB mount | grep "/storage/sdcard0" | wc -l)" != "1" ]; do
+		if [ "$SD_COUNTER" -ge "60" ]; then
 			break;
 		fi;
 		echo "Waiting For Internal SDcard to be mounted";
-		sleep 10;
-		INT_SDCARD_MOUNT=$(BB mount | grep "/storage/sdcard0" | wc -l);
+		sleep 5;
 		SD_COUNTER=$((SD_COUNTER+1));
 		# max 5min
 	done;

@@ -289,13 +289,13 @@ ROOT_RW;
 	$BB chmod 666 /tmp/uci_done;
 
 	while [ "$(cat /tmp/uci_done)" != "1" ]; do
-		if [ "$COUNTER" -ge "12" ]; then
+		if [ "$COUNTER" -ge "24" ]; then
 			break;
 		fi;
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
-		sleep 10;
+		sleep 5;
 		COUNTER=$((COUNTER+1));
 		# max 2min
 	done;

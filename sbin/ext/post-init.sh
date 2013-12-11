@@ -289,13 +289,17 @@ ROOT_RW;
 	$BB chmod 666 /tmp/uci_done;
 
 	while [ "$(cat /tmp/uci_done)" != "1" ]; do
-		if [ "$COUNTER" -ge "24" ]; then
+		if [ "$COUNTER" -ge "40" ]; then
 			break;
 		fi;
-		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		if [ "$(cat /proc/sys/vm/vfs_cache_pressure)" -eq "20" ]; then
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		else
+			echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		fi;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
-		sleep 5;
+		sleep 3;
 		COUNTER=$((COUNTER+1));
 		# max 2min
 	done;

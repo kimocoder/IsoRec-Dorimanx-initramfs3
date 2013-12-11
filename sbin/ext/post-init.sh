@@ -304,7 +304,7 @@ ROOT_RW;
 		# max 2min
 	done;
 
-	while [ "$($BB mount | grep "/storage/sdcard0" | wc -l)" != "1" ]; do
+	while [ "$($BB mount | grep "/storage/sdcard0" | wc -l)" == "0" ]; do
 		if [ "$SD_COUNTER" -ge "60" ]; then
 			break;
 		fi;

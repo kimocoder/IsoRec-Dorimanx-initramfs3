@@ -60,14 +60,16 @@ echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
 # WIFI HELPER
 echo "1" > "$DATA_DIR"/WIFI_HELPER_AWAKE;
 echo "1" > "$DATA_DIR"/WIFI_HELPER_TMP;
-WIFI_HELPER_AWAKE=$("$DATA_DIR"/WIFI_HELPER_AWAKE);
-WIFI_HELPER_TMP=$("$DATA_DIR"/WIFI_HELPER_TMP);
+chmod 666 "$DATA_DIR"/WIFI_HELPER*;
+WIFI_HELPER_AWAKE="$DATA_DIR"/WIFI_HELPER_AWAKE;
+WIFI_HELPER_TMP="$DATA_DIR"/WIFI_HELPER_TMP;
 
 # MOBILE HELPER
 echo "1" > "$DATA_DIR"/MOBILE_HELPER_AWAKE;
 echo "1" > "$DATA_DIR"/MOBILE_HELPER_TMP;
-MOBILE_HELPER_AWAKE=$("$DATA_DIR"/MOBILE_HELPER_AWAKE);
-MOBILE_HELPER_TMP=$("$DATA_DIR"/MOBILE_HELPER_TMP);
+chmod 666 "$DATA_DIR"/MOBILE_HELPER*;
+MOBILE_HELPER_AWAKE="$DATA_DIR"/MOBILE_HELPER_AWAKE;
+MOBILE_HELPER_TMP="$DATA_DIR"/MOBILE_HELPER_TMP;
 
 # ==============================================================
 # I/O-TWEAKS
@@ -239,7 +241,7 @@ BATTERY_TWEAKS()
 		done;
 
 		# BUS: power support
-		if [ "$(ls /sys/bus/sdio/devices/*/power/control | wc -l)" != "0" ]; then
+		if [ -e /sys/bus/sdio/devices/mmc2:0001:1/power/control ]; then
 			local buslist="spi i2c sdio";
 			for bus in $buslist; do
 				local POWER_CONTROL=$(ls /sys/bus/"$bus"/devices/*/power/control);

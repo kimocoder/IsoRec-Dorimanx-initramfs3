@@ -362,22 +362,22 @@ CPU_HOTPLUG_TWEAKS()
 
 	# sleep-settings
 	if [ "$state" == "sleep" ]; then
-		echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
-		echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
-		echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
-		echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
-		echo "$up_load_sleep" > $up_load_tmp;
-		echo "$down_load_sleep" > $down_load_tmp;
-		echo "1" > $maxcoreslimit_tmp;
+		echo "$cpu_up_rate_sleep" > "$cpu_up_rate_tmp";
+		echo "$cpu_down_rate_sleep" > "$cpu_down_rate_tmp";
+		echo "$hotplug_freq_fst_sleep" > "$hotplug_freq_fst_tmp";
+		echo "$hotplug_freq_snd_sleep" > "$hotplug_freq_snd_tmp";
+		echo "$up_load_sleep" > "$up_load_tmp";
+		echo "$down_load_sleep" > "$down_load_tmp";
+		echo "1" > "$maxcoreslimit_tmp";
 	# awake-settings
 	elif [ "$state" == "awake" ]; then
-		echo "$cpu_up_rate" > $cpu_up_rate_tmp;
-		echo "$cpu_down_rate" > $cpu_down_rate_tmp;
-		echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
-		echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
-		echo "$up_load" > $up_load_tmp;
-		echo "$down_load" > $down_load_tmp;
-		echo "2" > $maxcoreslimit_tmp;
+		echo "$cpu_up_rate" > "$cpu_up_rate_tmp";
+		echo "$cpu_down_rate" > "$cpu_down_rate_tmp";
+		echo "$hotplug_freq_fst" > "$hotplug_freq_fst_tmp";
+		echo "$hotplug_freq_snd" > "$hotplug_freq_snd_tmp";
+		echo "$up_load" > "$up_load_tmp";
+		echo "$down_load" > "$down_load_tmp";
+		echo "2" > "$maxcoreslimit_tmp";
 	fi;
 }
 
@@ -393,9 +393,9 @@ TWEAK_HOTPLUG_ECO()
 	fi;
 
 	if [ "$state" == "sleep" ]; then
-		echo "1" > $eco_mode_active_tmp;
+		echo "1" > "$eco_mode_active_tmp";
 	elif [ "$state" == "awake" ]; then
-		echo "0" > $eco_mode_active_tmp;
+		echo "0" > "$eco_mode_active_tmp";
 	fi;
 
 	log -p i -t "$FILE_NAME" "*** TWEAK_HOTPLUG_ECO: $state ***";
@@ -812,7 +812,7 @@ UKSMCTL()
 	fi;
 
 	if [ "$cortexbrain_uksm_control" == "on" ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
-		echo "1" > $uksm_run_tmp;
+		echo "1" > "$uksm_run_tmp";
 		renice -n 10 -p "$(pidof uksmd)";
 
 		if [ "$state" == "awake" ]; then
@@ -1093,9 +1093,9 @@ CENTRAL_CPU_FREQ()
 	if [ "$cortexbrain_cpu" == "on" ]; then
 		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -ge "0" ]; then
 			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-				MAX_FREQ=$(scaling_max_freq_oc);
+				MAX_FREQ="$scaling_max_freq_oc";
 			else
-				MAX_FREQ=$(scaling_max_freq);
+				MAX_FREQ="$scaling_max_freq";
 			fi;
 			if [ "$MAX_FREQ" -gt "1000000" ]; then
 				echo "$MAX_FREQ" > "$max_freq_limit_0_tmp";
@@ -1114,47 +1114,47 @@ CENTRAL_CPU_FREQ()
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
 			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-				WAKE_MAX_FREQ=$scaling_max_freq_oc;
+				WAKE_MAX_FREQ="$scaling_max_freq_oc";
 			else
-				WAKE_MAX_FREQ=$scaling_max_freq;
+				WAKE_MAX_FREQ="$scaling_max_freq";
 			fi;
-			echo "$scaling_min_freq" > $min_freq_limit_0_tmp;
-			echo "$scaling_min_freq" > $min_freq_limit_1_tmp;
+			echo "$scaling_min_freq" > "$min_freq_limit_0_tmp";
+			echo "$scaling_min_freq" > "$min_freq_limit_1_tmp";
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$WAKE_MAX_FREQ" > $max_freq_limit_0_tmp;
-			echo "$WAKE_MAX_FREQ" > $max_freq_limit_1_tmp;
+			echo "$WAKE_MAX_FREQ" > "$max_freq_limit_0_tmp";
+			echo "$WAKE_MAX_FREQ" > "$max_freq_limit_1_tmp";
 			echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		elif [ "$state" == "standby_freq" ]; then
-			echo "$standby_freq" > $min_freq_limit_0_tmp;
-			echo "$standby_freq" > $min_freq_limit_1_tmp;
+			echo "$standby_freq" > "$min_freq_limit_0_tmp";
+			echo "$standby_freq" > "$min_freq_limit_1_tmp";
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		elif [ "$state" == "sleep_freq" ]; then
-			echo "$scaling_min_suspend_freq" > $min_freq_limit_0_tmp;
-			echo "$scaling_min_suspend_freq" > $min_freq_limit_1_tmp;
-			echo "$scaling_max_suspend_freq" > $max_freq_limit_0_tmp;
-			echo "$scaling_max_suspend_freq" > $max_freq_limit_1_tmp;
+			echo "$scaling_min_suspend_freq" > "$min_freq_limit_0_tmp";
+			echo "$scaling_min_suspend_freq" > "$min_freq_limit_1_tmp";
+			echo "$scaling_max_suspend_freq" > "$max_freq_limit_0_tmp";
+			echo "$scaling_max_suspend_freq" > "$max_freq_limit_1_tmp";
 			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		elif [ "$state" == "sleep_call" ]; then
-			echo "$standby_freq" > $min_freq_limit_0_tmp;
-			echo "$standby_freq" > $min_freq_limit_1_tmp;
+			echo "$standby_freq" > "$min_freq_limit_0_tmp";
+			echo "$standby_freq" > "$min_freq_limit_1_tmp";
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			# brain cooking prevention during call
-			echo "800000" > $max_freq_limit_0_tmp;
-			echo "800000" > $max_freq_limit_1_tmp;
+			echo "800000" > "$max_freq_limit_0_tmp";
+			echo "800000" > "$max_freq_limit_1_tmp";
 			echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		else
 			# if wakeup boost is disabled 0 or -1
 			if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-				WAKE_MAX_FREQ=$scaling_max_freq_oc;
+				WAKE_MAX_FREQ="$scaling_max_freq_oc";
 			else
-				WAKE_MAX_FREQ=$scaling_max_freq;
+				WAKE_MAX_FREQ="$scaling_max_freq";
 			fi;
-			echo "$scaling_min_freq" > $min_freq_limit_0_tmp;
-			echo "$scaling_min_freq" > $min_freq_limit_1_tmp;
+			echo "$scaling_min_freq" > "$min_freq_limit_0_tmp";
+			echo "$scaling_min_freq" > "$min_freq_limit_1_tmp";
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$WAKE_MAX_FREQ" > $max_freq_limit_0_tmp;
-			echo "$WAKE_MAX_FREQ" > $max_freq_limit_1_tmp;
+			echo "$WAKE_MAX_FREQ" > "$max_freq_limit_0_tmp";
+			echo "$WAKE_MAX_FREQ" > "$max_freq_limit_1_tmp";
 			echo "$WAKE_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		fi;
 
@@ -1188,7 +1188,7 @@ BOOST_DELAY()
 # set swappiness in case that no root installed, and zram used or disk swap used
 SWAPPINESS()
 {
-	local SWAP_CHECK=$(free | grep Swap | awk '{ print $2 }');
+	local SWAP_CHECK=$(free | grep Swap | awk '{print $2}');
 
 	if [ "$SWAP_CHECK" -eq "0" ]; then
 		echo "0" > /proc/sys/vm/swappiness;
@@ -1296,7 +1296,7 @@ BLN_CORRECTION()
 
 TOUCH_KEYS_CORRECTION()
 {
-	if [ "$force_disable" -eq 0 ]; then
+	if [ "$force_disable" -eq "0" ]; then
 		if [ "$dyn_brightness" == "on" ]; then
 			echo "1" > /sys/class/misc/notification/dyn_brightness;
 		fi;
@@ -1328,17 +1328,17 @@ CROND_SAFETY()
 GAMMA_FIX()
 {
 	local min_gamm_tmp="/sys/class/misc/brightness_curve/min_gamma";
-	if [ -e $min_gamm_tmp ]; then
+	if [ -e "$min_gamm_tmp" ]; then
 		min_gamm_tmp="/dev/null";
 	fi;
 
 	local max_gamma_tmp="/sys/class/misc/brightness_curve/max_gamma";
-	if [ -e $max_gamma_tmp ]; then
+	if [ -e "$max_gamma_tmp" ]; then
 		max_gamma_tmp="/dev/null";
 	fi;
 
-	echo "$min_gamma" > $min_gamm_tmp;
-	echo "$max_gamma" > $max_gamma_tmp;
+	echo "$min_gamma" > "$min_gamm_tmp";
+	echo "$max_gamma" > "$max_gamma_tmp";
 
 	log -p i -t "$FILE_NAME" "*** GAMMA_FIX: min: $min_gamma max: $max_gamma ***: done";
 }
@@ -1347,19 +1347,19 @@ ENABLEMASK()
 {
 	local state="$1";
 	local enable_mask_tmp="/sys/module/cpuidle_exynos4/parameters/enable_mask";
-	if [ -e $enable_mask_tmp ]; then
+	if [ -e "$enable_mask_tmp" ]; then
 		enable_mask_tmp="/dev/null";
 	fi;
 
-	local tmp_enable_mask=$(cat $enable_mask_tmp);
+	local tmp_enable_mask=$(cat "$enable_mask_tmp");
 
 	if [ "$state" == "awake" ]; then
 		if [ "$tmp_enable_mask" != "$enable_mask" ]; then
-			echo "$enable_mask" > $enable_mask_tmp;
+			echo "$enable_mask" > "$enable_mask_tmp";
 		fi;
 	elif [ "$state" == "sleep" ]; then
 		if [ "$tmp_enable_mask" != "$enable_mask_sleep" ]; then
-			echo "$enable_mask_sleep" > $enable_mask_tmp;
+			echo "$enable_mask_sleep" > "$enable_mask_tmp";
 		fi;
 	fi;
 
@@ -1376,27 +1376,27 @@ IO_SCHEDULER()
 		local new_scheduler="";
 		local tmp_scheduler=$(cat "$sys_mmc0_scheduler_tmp");
 
-		if [ ! -e $sys_mmc1_scheduler_tmp ]; then
+		if [ ! -e "$sys_mmc1_scheduler_tmp" ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
 
 		local ext_tmp_scheduler=$(cat "$sys_mmc1_scheduler_tmp");
 
 		if [ "$state" == "awake" ]; then
-			new_scheduler=$scheduler;
+			new_scheduler="$scheduler";
 			if [ "$tmp_scheduler" != "$scheduler" ]; then
-				echo "$scheduler" > $sys_mmc0_scheduler_tmp;
+				echo "$scheduler" > "$sys_mmc0_scheduler_tmp";
 			fi;
 			if [ "$ext_tmp_scheduler" != "deadline" ]; then
-				echo "deadline" > $sys_mmc1_scheduler_tmp;
+				echo "deadline" > "$sys_mmc1_scheduler_tmp";
 			fi;
 		elif [ "$state" == "sleep" ]; then
-			new_scheduler=$sleep_scheduler;
+			new_scheduler="$sleep_scheduler";
 			if [ "$tmp_scheduler" != "$sleep_scheduler" ]; then
-				echo "$sleep_scheduler" > $sys_mmc0_scheduler_tmp;
+				echo "$sleep_scheduler" > "$sys_mmc0_scheduler_tmp";
 			fi;
 			if [ "$ext_tmp_scheduler" != "$sleep_scheduler" ]; then
-				echo "$sleep_scheduler" > $sys_mmc1_scheduler_tmp;
+				echo "$sleep_scheduler" > "$sys_mmc1_scheduler_tmp";
 			fi;
 		fi;
 

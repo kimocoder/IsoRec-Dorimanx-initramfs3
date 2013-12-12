@@ -58,14 +58,16 @@ echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
 # ==============================================================
 
 # WIFI HELPER
+echo "1" > "$DATA_DIR"/WIFI_HELPER_AWAKE;
+echo "1" > "$DATA_DIR"/WIFI_HELPER_TMP;
 WIFI_HELPER_AWAKE=$("$DATA_DIR"/WIFI_HELPER_AWAKE);
 WIFI_HELPER_TMP=$("$DATA_DIR"/WIFI_HELPER_TMP);
-echo "1" > "$WIFI_HELPER_TMP";
 
 # MOBILE HELPER
+echo "1" > "$DATA_DIR"/MOBILE_HELPER_AWAKE;
+echo "1" > "$DATA_DIR"/MOBILE_HELPER_TMP;
 MOBILE_HELPER_AWAKE=$("$DATA_DIR"/MOBILE_HELPER_AWAKE);
 MOBILE_HELPER_TMP=$("$DATA_DIR"/MOBILE_HELPER_TMP);
-echo "1" > "$MOBILE_HELPER_TMP";
 
 # ==============================================================
 # I/O-TWEAKS
@@ -237,14 +239,16 @@ BATTERY_TWEAKS()
 		done;
 
 		# BUS: power support
-		local buslist="spi i2c sdio";
-		for bus in $buslist; do
-			local POWER_CONTROL=$(ls /sys/bus/"$bus"/devices/*/power/control);
-			for i in $POWER_CONTROL; do
-				chmod 777 "$i";
-				echo "auto" > "$i";
+		if [ "$(ls /sys/bus/sdio/devices/*/power/control | wc -l)" != "0" ]; then
+			local buslist="spi i2c sdio";
+			for bus in $buslist; do
+				local POWER_CONTROL=$(ls /sys/bus/"$bus"/devices/*/power/control);
+				for i in $POWER_CONTROL; do
+					chmod 777 "$i";
+					echo "auto" > "$i";
+				done;
 			done;
-		done;
+		fi;
 
 		log -p i -t "$FILE_NAME" "*** BATTERY_TWEAKS ***: enabled";
 

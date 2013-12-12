@@ -531,12 +531,12 @@ CPU_GOV_TWEAKS()
 
 		# merge up_threshold_at_min_freq & up_threshold_min_freq => up_threshold_at_min_freq_tmp
 		if [ "$up_threshold_at_min_freq_tmp" == "/dev/null" ] && [ "$up_threshold_min_freq_tmp" != "/dev/null" ]; then
-			up_threshold_at_min_freq_tmp=$(up_threshold_min_freq_tmp);
+			up_threshold_at_min_freq_tmp="$up_threshold_min_freq_tmp";
 		fi;
 
 		# merge freq_for_responsiveness_tmp & freq_responsiveness_tmp => freq_for_responsiveness_tmp
 		if [ "$freq_for_responsiveness_tmp" == "/dev/null" ] && [ "$freq_responsiveness_tmp" != "/dev/null" ]; then
-			freq_for_responsiveness_tmp=$(freq_responsiveness_tmp);
+			freq_for_responsiveness_tmp="$freq_responsiveness_tmp";
 		fi;
 
 		local sampling_down_max_mom_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_max_mom";
@@ -1186,7 +1186,7 @@ BOOST_DELAY()
 {
 	# check if ROM booting now, then don't wait - creation and deletion of $DATA_DIR/booting @> /sbin/ext/post-init.sh
 	if [ "$wakeup_boost" -gt "0" ] && [ ! -e "$DATA_DIR"/booting ]; then
-		log -p i -t "$FILE_NAME" "*** BOOST_DELAY: $(wakeup_boost)sec ***";
+		log -p i -t "$FILE_NAME" "*** BOOST_DELAY: ${wakeup_boost}sec ***";
 		sleep "$wakeup_boost";
 	fi;
 }

@@ -107,6 +107,9 @@ fi;
 # Apps and ROOT Install
 $BB sh /sbin/ext/install.sh;
 
+# Clean /res/ from no longer needed files to free modules kernel allocated mem
+$BB rm -rf /res/misc/sql /res/images /res/misc/JellyB-* /res/misc/vendor;
+
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks
 	sleep 5;

@@ -36,6 +36,7 @@ if [ "$(cat /tmp/sec_rom_boot)" -eq "1" ]; then
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /efs;
 	$BB mount -o remount,rw /
+	$BB umount -l /preload;
 	if [ ! -e /data_pri_rom ]; then
 		mkdir /data_pri_rom;
 		chmod 777 /data_pri_rom;
@@ -108,7 +109,7 @@ fi;
 $BB sh /sbin/ext/install.sh;
 
 # Clean /res/ from no longer needed files to free modules kernel allocated mem
-$BB rm -rf /res/misc/sql /res/images /res/misc/JellyB-* /res/misc/vendor;
+$BB rm -rf /res/misc/sql /res/images /res/misc/JellyB-* /res/misc/KitKat-CM-AOKP-11 /res/misc/vendor;
 
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks

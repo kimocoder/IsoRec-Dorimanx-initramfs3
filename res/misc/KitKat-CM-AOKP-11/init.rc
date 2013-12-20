@@ -67,8 +67,8 @@ loglevel 3
 
 # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell 0700 shell shell
-    mkdir /mnt/media_rw 0700 media_rw media_rw
-    mkdir /storage 0751 root sdcard_r
+    mkdir /mnt/media_rw 0777 media_rw sdcard_rw
+    mkdir /storage 0777 media_rw sdcard_rw
 
 # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root

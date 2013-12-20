@@ -1500,12 +1500,10 @@ MOUNT_FIX()
 		mount -o remount,rw /preload;
 	fi;
 	if [ "$EXTERNAL_SDCARD_CM" -eq "1" ]; then
-		mount -o remount,rw,nosuid,nodev,noexec /storage/sdcard1;
+		mount -o remount,rw /storage/sdcard1;
 	elif [ "$EXTERNAL_SDCARD_STOCK" -eq "1" ]; then
-		mount -o remount,rw,nosuid,nodev,noexec /storage/extSdCard;
+		mount -o remount,rw /storage/extSdCard;
 	fi;
-
-	mount -o remount,rw,nosuid,nodev,noexec /storage/sdcard0;
 }
 
 # ==============================================================

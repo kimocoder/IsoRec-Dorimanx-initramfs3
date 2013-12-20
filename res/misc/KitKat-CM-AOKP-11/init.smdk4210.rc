@@ -6,19 +6,19 @@ on init
     export SECONDARY_STORAGE /storage/sdcard1
 
     mkdir /storage 0775 system system
-    mkdir /storage/sdcard0 0774 root system
-    mkdir /storage/sdcard1 0774 root system
-    mkdir /storage/usbdisk0 0774 root system
+    mkdir /storage/sdcard0 0700 root root
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /storage/usbdisk0 0700 root root
 
     mkdir /efs 0771 radio system
     mkdir /preload 0771 system system
     mkdir /mnt 0775 root system
     mkdir /mnt/.lfs 0755 root root
 
-    mkdir /mnt/media_rw 0774 system media_rw
-    mkdir /mnt/media_rw/sdcard0 0774 system media_rw
-    mkdir /mnt/media_rw/sdcard1 0774 system media_rw
-    mkdir /mnt/media_rw/usbdisk0 0774 system media_rw
+#   mkdir /mnt/media_rw 0755 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
 
 # for backwards compatibility
     symlink /storage/sdcard0 /sdcard

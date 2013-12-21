@@ -587,7 +587,7 @@ service drm /system/bin/drmserver
     user drm
 # [ SEC_MM_DRM
 # fix
-    group system drm inet drmrpc sdcard_r radio sdcard_rw media_rw
+    group system drm inet drmrpc radio sdcard_rw media_rw
 # org
 #   group drm system inet drmrpc sdcard_r radio
 # ]
@@ -595,7 +595,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc sdcard_rw sdcard_r media_rw lgt_gid graphics
+    group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc sdcard_rw media_rw lgt_gid graphics
     ioprio rt 4
 
 service powersnd /system/bin/samsungpowersoundplay

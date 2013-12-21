@@ -287,27 +287,15 @@ $BB sh /sbin/ext/properties.sh;
 ROOT_RW;
 
 (
-	COUNTER=0;
+	# mount apps2sd partition point for CM11
+	if [ -e /tmp/cm11-installed ]; then
+		if [ ! -e /mnt/.secondrom/.android_secure ]; then
+			$BB mkdir /mnt/.secondrom/.android_secure;
+		fi;
+		$BB mount --bind /mnt/.secondrom/.android_secure /mnt/secure/asec;
+	fi;
+
 	SD_COUNTER=0;
-	echo "0" > /tmp/uci_done;
-	$BB chmod 666 /tmp/uci_done;
-
-	while [ "$(cat /tmp/uci_done)" != "1" ]; do
-		if [ "$COUNTER" -ge "40" ]; then
-			break;
-		fi;
-		if [ "$(cat /proc/sys/vm/vfs_cache_pressure)" -eq "20" ]; then
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		else
-			echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		fi;
-		pkill -f "com.gokhanmoral.stweaks.app";
-		echo "Waiting For UCI to finish";
-		sleep 3;
-		COUNTER=$((COUNTER+1));
-		# max 2min
-	done;
-
 	while [ "$($BB mount | grep "/storage/sdcard0" | wc -l)" == "0" ]; do
 		if [ "$SD_COUNTER" -ge "60" ]; then
 			break;
@@ -339,6 +327,28 @@ ROOT_RW;
 			echo "no sec data image found! abort."
 		fi;
 	fi;
+)&
+
+(
+	COUNTER=0;
+	echo "0" > /tmp/uci_done;
+	$BB chmod 666 /tmp/uci_done;
+
+	while [ "$(cat /tmp/uci_done)" != "1" ]; do
+		if [ "$COUNTER" -ge "40" ]; then
+			break;
+		fi;
+		if [ "$(cat /proc/sys/vm/vfs_cache_pressure)" -eq "20" ]; then
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		else
+			echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		fi;
+		pkill -f "com.gokhanmoral.stweaks.app";
+		echo "Waiting For UCI to finish";
+		sleep 3;
+		COUNTER=$((COUNTER+1));
+		# max 2min
+	done;
 
 	# restore normal freq
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;

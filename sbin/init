@@ -469,6 +469,9 @@ SECROM_FUNCTION_AOSP()
 	# init.rc style JB/CM/AOKP
 	if [ "$SECONDROM" -eq "1" ]; then
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		if [ -e /fstab.smdk4210.sec ]; then
+			$BB mv /fstab.smdk4210.sec /fstab.smdk4210
+		fi;
 		if [ -e /init.rc.2 ]; then
 			$BB rm /init.rc.2;
 		fi;
@@ -726,6 +729,8 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	$BB cp -a /res/misc/KitKat-CM-AOKP-11/* /;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
+	# for sbin/ext/post_init.sh
+	echo "1" > /tmp/cm11-installed;
 
 	SECROM_FUNCTION_AOSP;
 

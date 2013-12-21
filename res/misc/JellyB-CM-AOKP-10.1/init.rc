@@ -26,7 +26,7 @@ on early-init
 
 # create mountpoints
     mkdir /mnt 0775 root system
-    mkdir /storage 0050 root sdcard_r
+    mkdir /storage 0050 root sdcard_rw
     # Create mountpoint so Dalvik can mark as slave in zygotes.
     mount tmpfs tmpfs /storage mode=0050,uid=0,gid=1028
 
@@ -89,7 +89,7 @@ loglevel 3
 
 # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell 0700 shell shell
-    mkdir /storage 0751 root sdcard_r
+    mkdir /storage 0751 root sdcard_rw
 
 # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -493,7 +493,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
 
 service surfaceflinger /system/bin/surfaceflinger
     class main

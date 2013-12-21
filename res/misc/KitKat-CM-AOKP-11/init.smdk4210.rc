@@ -26,12 +26,12 @@ on init
     symlink /storage/usbdisk0 /mnt/usbdisk0
 
 on fs
-    setprop ro.crypto.fuse_sdcard true
-
 # make sure sdcard is mounted because we need apps2sd to work
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
     mount_all /fstab.smdk4210
+
+    setprop ro.crypto.fuse_sdcard true
 
     mkdir /efs/bluetooth
     mkdir /efs/wifi

@@ -28,12 +28,12 @@ on early-init
     mkdir /mnt 0775 root system
 
 # Allow system UID to setenforce and set booleans.
-    chown system system /selinux/enforce
-    chown system system /sys/fs/selinux/enforce
-    chown -R system system /selinux/booleans
-    chown -R system system /sys/fs/selinux/booleans
-    chown system system /selinux/commit_pending_bools
-    chown system system /sys/fs/selinux/commit_pending_bools
+#   chown system system /selinux/enforce
+#   chown system system /sys/fs/selinux/enforce
+#   chown -R system system /selinux/booleans
+#   chown -R system system /sys/fs/selinux/booleans
+#   chown system system /selinux/commit_pending_bools
+#   chown system system /sys/fs/selinux/commit_pending_bools
 
 on init
 
@@ -380,8 +380,8 @@ on boot
     chown root radio /proc/cmdline
 
 # Set these so we can remotely update SELinux policy
-    chown system system /sys/fs/selinux/load
-    chown system system /sys/fs/selinux/enforce
+#   chown system system /sys/fs/selinux/load
+#   chown system system /sys/fs/selinux/enforce
 
 # Assign TCP buffer thresholds to be ceiling value of technology maximums
 # Increased technology maximums should be reflected here.
@@ -419,9 +419,6 @@ on property:vold.decrypt=trigger_restart_framework
 on property:vold.decrypt=trigger_shutdown_framework
     class_reset late_start
     class_reset main
-
-on property:sys.powerctl=*
-    powerctl ${sys.powerctl}
 
 # system server cannot write to /proc/sys files, so proxy it through init
 on property:sys.sysctl.extra_free_kbytes=*

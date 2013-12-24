@@ -3,7 +3,7 @@ import init.bt.rc
 
 on early-init
     export EXTERNAL_STORAGE /storage/sdcard0
-    mkdir /storage 0550 system sdcard_rw
+    mkdir /storage 0550 system sdcard_r
     mkdir /storage/sdcard0 0000 system system
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
@@ -68,6 +68,8 @@ on post-fs-data
     chmod 0660 /data/.psm.info
 
 on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
 # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
 #    write /sys/block/mmcblk0/queue/scheduler noop
 # SISO-ANDR_PERF :: END

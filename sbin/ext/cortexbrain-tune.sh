@@ -1486,23 +1486,39 @@ VIBRATE_FIX()
 
 MOUNT_FIX()
 {
-	local CHECK_SYSTEM=$(mount | grep /system | grep ro | wc -l);
-	local CHECK_DATA=$(mount | grep /data | cut -c 26-27 | grep ro | grep -v ec | wc -l);
-	local PRELOAD_CHECK=$(mount | grep /preload | grep ro | wc -l);
+	local CHECK_SYSTEM=$(mount | grep "/system" | grep rw | wc -l);
+	local CHECK_DATA=$(mount | grep "/data" | cut -c 26-27 | grep ro | grep -v ec | grep -v ec | wc -l);
+	local PRELOAD_CHECK=$(mount | grep "/preload" | grep ro | wc -l);
+	local SDCARD_CHECK=$(mount | grep "/storage/sdcard0" | grep rw | grep -v tmpfs | wc -l);
 
-	if [ "$CHECK_SYSTEM" -eq "1" ]; then
+	if [ "$SDCARD_CHECK" -eq "0" ]; then
+		mount -o remount,rw /storage/sdcard0;
+		log -p i -t "$FILE_NAME" "*** SDCARD_RO_FIX ***";
+	fi;
+	if [ "$EXTERNAL_SDCARD_CM" -eq "1" ]; then
+		local EXT_SDCARD_CHECK=$(mount | grep "/storage/sdcard1" | grep rw | wc -l);
+		if [ "$EXT_SDCARD_CHECK" -eq "0" ]; then
+			mount -o remount,rw /storage/sdcard1;
+			log -p i -t "$FILE_NAME" "*** EXT_SDCARD_RO_FIX ***";
+		fi;
+	elif [ "$EXTERNAL_SDCARD_STOCK" -eq "1" ]; then
+		local EXT_SDCARD_CHECK=$(mount | grep "/storage/extSdCard" | grep rw | wc -l);
+		if [ "$EXT_SDCARD_CHECK" -eq "0" ]; then
+			mount -o remount,rw /storage/extSdCard;
+			log -p i -t "$FILE_NAME" "*** EXT_SDCARD_RO_FIX ***";
+		fi;
+	fi;
+	if [ "$CHECK_SYSTEM" -eq "0" ]; then
 		mount -o remount,rw /system;
+		log -p i -t "$FILE_NAME" "*** SYSTEM_RO_FIX ***";
 	fi;
 	if [ "$CHECK_DATA" -eq "1" ]; then
 		mount -o remount,rw /data;
+		log -p i -t "$FILE_NAME" "*** DATA_RO_FIX ***";
 	fi;
 	if [ "$PRELOAD_CHECK" -eq "1" ]; then
 		mount -o remount,rw /preload;
-	fi;
-	if [ "$EXTERNAL_SDCARD_CM" -eq "1" ]; then
-		mount -o remount,rw /storage/sdcard1;
-	elif [ "$EXTERNAL_SDCARD_STOCK" -eq "1" ]; then
-		mount -o remount,rw /storage/extSdCard;
+		log -p i -t "$FILE_NAME" "*** PRELOAD_RO_FIX ***";
 	fi;
 }
 

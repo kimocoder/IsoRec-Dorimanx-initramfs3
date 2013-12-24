@@ -16,7 +16,11 @@ on init
     mkdir /sd-ext
     mkdir /system
     mkdir /data
+    mkdir /data/property
     mkdir /cache
+
+    chown root root /data/property
+    chmod 0700 /data/property
 
     chown root shell /tmp
     chmod 0775 /tmp
@@ -37,6 +41,8 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
     setprop ro.build.product GT-I9100
     setprop ro.product.device GT-I9100
 

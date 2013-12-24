@@ -86,7 +86,7 @@ loglevel 3
 
 # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell 0700 shell shell
-    mkdir /storage 0751 root sdcard_rw
+    mkdir /storage 0050 root sdcard_r
 
 # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -222,6 +222,7 @@ on post-fs-data
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
 # storing dumps on platforms which do not have a dedicated dump partition.
+
     mkdir /data/dontpanic 0750 root log
 
 # Collect apanic data, free resources and re-arm trigger
@@ -262,14 +263,14 @@ on post-fs-data
     mkdir /data/app-asec 0700 root root
     mkdir /data/app-lib 0771 system system
     mkdir /data/app 0771 system system
-    mkdir /data/property 0770 root radio
+    mkdir /data/property 0700 root root
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
     mkdir /data/radio 0770 radio radio
 
 # set correct permissions on /data/property
-    chown root radio /data/property
-    chmod 0770 /data/property
+    chown root root /data/property
+    chmod 0700 /data/property
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -487,7 +488,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
 
 service surfaceflinger /system/bin/surfaceflinger
     class main

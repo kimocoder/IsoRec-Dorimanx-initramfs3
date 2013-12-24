@@ -5,6 +5,7 @@ on init
     mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
     mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
 
+    mkdir /storage 0775 system system
     mkdir /storage/sdcard0 0770 root root
     mkdir /storage/sdcard1 0770 root root
     mkdir /storage/usbdisk0 0770 root root
@@ -28,6 +29,7 @@ on init
 on fs
 # make sure sdcard is mounted because we need apps2sd to work
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
+    mkdir /mnt/.secondrom/.android_secure 0700 root root
 
     mount_all /fstab.smdk4210
 
@@ -306,6 +308,7 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"

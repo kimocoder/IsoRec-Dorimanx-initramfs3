@@ -1,7 +1,7 @@
 # CyanogenMod and AOKP Extras
 
-Now that we have SuperSU for 4.3, no need to run this.
-#import /init.superuser.rc
+# Now that we have SuperSU for 4.3, no need to run this.
+# import /init.superuser.rc
 
 on init
     export ANDROID_CACHE /cache
@@ -26,7 +26,6 @@ on boot
     chmod 0664 /sys/kernel/mm/uksm/run
     write /sys/kernel/mm/uksm/sleep_millisecs 500
 
-
     chown system system /dev/cpuctl/apps/cpu.notify_on_migrate
     chmod 0644 /dev/cpuctl/apps/cpu.notify_on_migrate
 
@@ -34,6 +33,7 @@ on boot
 on property:service.adb.tcp.port=5555
     stop adbd
     start adbd
+
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd

@@ -289,9 +289,6 @@ ROOT_RW;
 (
 	# mount apps2sd partition point for CM11
 	if [ -e /tmp/cm11-installed ]; then
-		if [ ! -e /mnt/.secondrom/.android_secure ]; then
-			$BB mkdir /mnt/.secondrom/.android_secure;
-		fi;
 		$BB mount --bind /mnt/.secondrom/.android_secure /mnt/secure/asec;
 	fi;
 
@@ -368,7 +365,7 @@ ROOT_RW;
 	DM_COUNT=$(find /sys/block/dm* | wc -l);
 	if [ "$DM_COUNT" -gt "0" ]; then
 		for d in $($BB mount | grep dm | cut -d " " -f1 | grep -v vold); do
-			$BB mount -o remount,ro,noauto_da_alloc "$d";
+			$BB mount -o remount,noauto_da_alloc "$d";
 		done;
 
 		DM=$(find /sys/block/dm*);
@@ -377,6 +374,8 @@ ROOT_RW;
 			echo "0" > "$i"/queue/iostats;
 		done;
 	fi;
+
+	$BB mount -o remount,rw /storage/sdcard0;
 
 	# script finish here, so let me know when
 	echo "Done Booting" > /data/dm-boot-check;

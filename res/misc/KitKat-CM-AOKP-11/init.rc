@@ -76,7 +76,7 @@ loglevel 3
 # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell 0700 shell shell
     mkdir /mnt/media_rw 0700 media_rw media_rw
-    mkdir /storage 0751 root sdcard_rw
+    mkdir /storage 0751 root sdcard_r
 
 # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -204,6 +204,7 @@ on post-fs-data
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
 # storing dumps on platforms which do not have a dedicated dump partition.
+
     mkdir /data/dontpanic 0750 root log
 
 # Collect apanic data, free resources and re-arm trigger
@@ -248,6 +249,10 @@ on post-fs-data
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
     mkdir /data/radio 0770 radio radio
+
+# set correct permissions on /data/property
+    chown root root /data/property
+    chmod 0700 /data/property
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -479,7 +484,7 @@ service ril-daemon /system/bin/rild
     socket rild-debug stream 660 radio system
     socket cutback stream 660 media radio
     user root
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
 
 service surfaceflinger /system/bin/surfaceflinger
     class main
@@ -503,7 +508,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag mediadrm
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm qcom_diag
     ioprio rt 4
 
 service bootanim /system/bin/bootanimation

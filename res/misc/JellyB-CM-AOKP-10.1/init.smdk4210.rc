@@ -281,6 +281,8 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
     setprop ro.radio.noril yes
 
 # permissions for NFC

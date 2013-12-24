@@ -70,6 +70,11 @@ SDCARD_FIX()
 
 BOOT_ROM()
 {
+
+	# perm fixes
+	$BB chown -R root:root /data/property;
+	$BB chmod -R 0700 /data/property;
+
 	# Start ROM VM boot!
 	start;
 

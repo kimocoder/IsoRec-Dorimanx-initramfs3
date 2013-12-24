@@ -1,25 +1,19 @@
 on init
-
+    setprop ro.build.selinux 0
     write /proc/sys/vm/mmap_min_addr 32768
-
-on boot
-# Need for Sound changes and other stuff, found by GM!
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 on post-fs-data
 # insmod kernel modules
     insmod /system/lib/modules/Si4709_driver.ko
 
 on fs
-
 # Tweaks For ROM
     setprop ro.telephony.call_ring.delay 800
-    setprop dalvik.vm.execution-mode int:jit
+#   setprop dalvik.vm.execution-mode int:jit
     setprop persist.adb.notify 0
     setprop pm.sleep_mode 1
     setprop ro.kernel.android.checkjni 0
     setprop ro.kernel.checkjni 0
-    setprop ro.build.selinux 0
 
 # Video Tuning
     setprop ro.media.enc.jpeg.quality 100,100,100

@@ -297,6 +297,7 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"

@@ -81,7 +81,7 @@ mknod /dev/block/loop0 b 7 0
 $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
 
 # prevent from media storage to dig in clockworkmod backup dir
-$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( mkdir /mnt/tmp/.secondrom/ ) && ( touch /mnt/tmp/.secondrom/.nomedia ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
 EXSDCARD()
 {

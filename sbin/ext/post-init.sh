@@ -39,13 +39,13 @@ if [ "$(cat /tmp/sec_rom_boot)" -eq "1" ]; then
 	$BB umount -l /preload;
 	if [ ! -e /data_pri_rom ]; then
 		mkdir /data_pri_rom;
-		chmod 777 /data_pri_rom;
 		$BB mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
+		chmod 700 /data_pri_rom;
 	fi;
 	if [ ! -e /system_pri_rom ]; then
 		mkdir /system_pri_rom;
-		chmod 777 /system_pri_rom;
 		$BB mount -t ext4 /dev/block/mmcblk0p9 /system_pri_rom;
+		chmod 700 /system_pri_rom;
 	fi;
 else
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /preload;
@@ -289,7 +289,9 @@ ROOT_RW;
 (
 	# mount apps2sd partition point for CM11
 	if [ -e /tmp/cm11-installed ]; then
-		$BB mount --bind /mnt/.secondrom/.android_secure /mnt/secure/asec;
+		if [ "$(cat /tmp/sec_rom_boot)" -eq "1" ]; then
+			$BB mount --bind /mnt/.secondrom/.android_secure /mnt/secure/asec;
+		fi;
 	fi;
 
 	SD_COUNTER=0;
@@ -304,22 +306,22 @@ ROOT_RW;
 	done;
 
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
-	if [ "$(cat /tmp/pri_rom_boot)" -eq "1" ]; then
+	if [ "$(cat /tmp/pri_rom_boot)" -eq "1" ] && [ ! -e /tmp/cm11-installed ]; then
 		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
 			$BB mkdir /data_sec_rom;
-			$BB chmod 777 /data_sec_rom;
 			FREE_LOOP=$(losetup -f);
 			if [ -e /sdcard/.secondrom/data.img ]; then
-				DATA_IMG=/sdcard/.secondrom/data.img
+				DATA_IMG=/sdcard/.secondrom/data.img;
 			elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
-				DATA_IMG=/storage/sdcard0/.secondrom/data.img
+				DATA_IMG=/storage/sdcard0/.secondrom/data.img;
 			fi;
 			if [ "a$FREE_LOOP" == "a" ]; then
 				mknod /dev/block/loop99 b 7 99
-				FREE_LOOP=/dev/block/loop99
+				FREE_LOOP=/dev/block/loop99;
 			fi;
 			losetup $FREE_LOOP $DATA_IMG;
 			$BB mount -t ext4 $FREE_LOOP /data_sec_rom;
+			$BB chmod 700 /data_sec_rom;
 		else
 			echo "no sec data image found! abort."
 		fi;

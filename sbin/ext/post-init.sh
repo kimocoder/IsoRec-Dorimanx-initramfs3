@@ -305,7 +305,9 @@ ROOT_RW;
 		# max 5min
 	done;
 
-	echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
+	if [ -e /sys/block/mmcblk1/queue/scheduler ]; then
+		echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
+	fi;
 
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
 	if [ "$(cat /tmp/pri_rom_boot)" -eq "1" ] && [ ! -e /tmp/cm11-installed ]; then

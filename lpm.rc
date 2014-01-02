@@ -17,9 +17,15 @@ on init
     mkdir /tmp
     mkdir /mnt/sdcard 0775 root root
 
+    write /proc/sys/vm/legacy_va_layout 0
+    write /proc/sys/kernel/randomize_va_space 2
+
 on boot
+# mounting system partition
+    mount ext4 /dev/block/mmcblk0p9 /system
+
 # CPU Frequency Governor
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor conservative
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
 
     ifup lo
     hostname localhost
@@ -61,3 +67,7 @@ on property:service.adb.root=1
     write /sys/class/android_usb/android0/enable 0
     restart adbd
     write /sys/class/android_usb/android0/enable 1
+
+service postinit /sbin/ext/lpm-script.sh
+    class core
+    user root

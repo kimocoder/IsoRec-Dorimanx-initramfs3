@@ -545,8 +545,8 @@ CM_AOKP_10_JB=$(find /system/bin/wfd | wc -l);
 CM_AOKP_10_JB=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | wc -l);
 CM_AOKP_4_3_JB=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l);
 CM_AOKP_11_KITKAT=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4" | wc -l);
-CM_AOKP_4_3_1_JB_PAC=$(find /system/framework/framework-pac.jar | wc -l);
-CM_AOKP_4_3_1_JB_BAM=$(find /system/framework/framework-bam.jar | wc -l);
+CM_AOKP_PAC=$(find /system/framework/framework-pac.jar | wc -l);
+CM_AOKP_BAM=$(find /system/framework/framework-bam.jar | wc -l);
 JBSAMMY=$(find /system/lib/libSamsungAnimation.so | wc -l);
 JBSAMMY2=$(find /system/lib/lib_Samsung_Resampler.so | wc -l);
 
@@ -708,9 +708,9 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	# Injecting JB Modded by Dorimanx and Fusionjack, SUPER libsqlite!
 	POWER_SQL_JB_4_3;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
-	if [ "$CM_AOKP_4_3_1_JB_PAC" -eq "1" ]; then
+	if [ "$CM_AOKP_PAC" -eq "1" ]; then
 		$BB cp -a res/misc/JellyB-CM-AOKP-PAC-4-3/* /;
-	elif [ "$CM_AOKP_4_3_1_JB_BAM" -eq "1" ]; then
+	elif [ "$CM_AOKP_BAM" -eq "1" ]; then
 		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-3/* /;
 	fi;
 	# for sbin/ext/install.sh
@@ -727,6 +727,11 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	# Injecting KitKat Modded by FusionJack, SUPER libsqlite!
 	POWER_SQL_KITKAT;
 	$BB cp -a /res/misc/KitKat-CM-AOKP-11/* /;
+	if [ "$CM_AOKP_PAC" -eq "1" ]; then
+		$BB cp -a res/misc/JellyB-CM-AOKP-PAC-4-4/* /;
+	elif [ "$CM_AOKP_BAM" -eq "1" ]; then
+		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-4/* /;
+	fi;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 	# for sbin/ext/post_init.sh

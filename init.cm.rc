@@ -1,7 +1,6 @@
 # CyanogenMod and AOKP Extras
 
-# Now that we have SuperSU for 4.3, no need to run this.
-# import /init.superuser.rc
+import /init.superuser.rc
 
 on init
     export ANDROID_CACHE /cache

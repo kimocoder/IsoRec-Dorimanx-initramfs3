@@ -599,6 +599,11 @@ CPU_GOV_TWEAKS()
 			disable_hotplug_tmp="/dev/null";
 		fi;
 
+		local boostfreq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostfreq";
+		if [ ! -e "$boostfreq_tmp" ]; then
+			boostfreq_tmp="/dev/null";
+		fi;
+
 		# sleep-settings
 		if [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > "$sampling_rate_tmp";
@@ -637,6 +642,7 @@ CPU_GOV_TWEAKS()
 			CPU_HOTPLUG_TWEAKS "sleep";
 		# awake-settings
 		elif [ "$state" == "awake" ]; then
+			CPU_HOTPLUG_TWEAKS "awake";
 			echo "$sampling_rate" > "$sampling_rate_tmp";
 			echo "$up_threshold" > "$up_threshold_tmp";
 			echo "$up_threshold_at_min_freq" > "$up_threshold_at_min_freq_tmp";
@@ -674,7 +680,7 @@ CPU_GOV_TWEAKS()
 			echo "$early_demand" > "$early_demand_tmp";
 			echo "$grad_up_threshold" > "$grad_up_threshold_tmp";
 			echo "$disable_hotplug" > "$disable_hotplug_tmp";
-			CPU_HOTPLUG_TWEAKS "awake";
+			echo "$boostfreq" > "$boostfreq_tmp";
 		fi;
 
 		log -p i -t "$FILE_NAME" "*** CPU_GOV_TWEAKS: $state ***: enabled";
@@ -1645,7 +1651,6 @@ SLEEP_MODE()
 		else
 			# Powered by USB
 			USB_POWER=1;
-			CPU_HOTPLUG_TWEAKS "awake";
 			log -p i -t "$FILE_NAME" "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else

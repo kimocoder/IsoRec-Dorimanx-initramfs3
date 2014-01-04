@@ -1,4 +1,5 @@
 boot_boost=1000000
+boostfreq=800000
 wakeup_boost=3
 scaling_max_freq=1000000
 scaling_max_freq_oc=1000000

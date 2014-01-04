@@ -435,6 +435,9 @@ ROOT_RW;
 		fi;
 	fi;
 
+	# kill radio logcat to sdcard
+	$BB pkill -f "logcat -b radio -v time";
+
 	# EFS Backup
 	$BB sh /sbin/ext/efs-backup.sh;
 )&

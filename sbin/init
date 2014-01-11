@@ -728,9 +728,9 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	POWER_SQL_KITKAT;
 	$BB cp -a /res/misc/KitKat-CM-AOKP-11/* /;
 	if [ "$CM_AOKP_PAC" -eq "1" ]; then
-		$BB cp -a res/misc/JellyB-CM-AOKP-PAC-4-4/* /;
+		$BB cp -a res/misc/KitKat-CM-AOKP-PAC-4-4/* /;
 	elif [ "$CM_AOKP_BAM" -eq "1" ]; then
-		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-4/* /;
+		$BB cp -a res/misc/KitKat-CM-AOKP-BAM-4-4/* /;
 	fi;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;

@@ -60,7 +60,7 @@ if [ -e /tmp/cm10.2-installed ] || [ -e /tmp/sammy_rom ]; then
 		else
 			sumd5sum_kernel=1;
 		fi;
-		if [ "$sumd5sum" -eq "$sumd5sum_kernel" ]; then
+		if [ "$sumd5sum" == "$sumd5sum_kernel" ]; then
 			NEW_SU=0;
 		else
 			NEW_SU=1;

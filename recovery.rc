@@ -1,33 +1,57 @@
 on early-init
     start ueventd
+    start healthd
 
 on init
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
-    export ANDROID_CACHE /cache
-    export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
-    mkdir /emmc
+    symlink /system/etc /etc
+
+    mkdir /boot
+    mkdir /recovery
     mkdir /sdcard
-    mkdir /sdcard1
-    mkdir /usbdisk
+    mkdir /internal_sd
+    mkdir /external_sd
     mkdir /sd-ext
+    mkdir /datadata
+    mkdir /emmc
     mkdir /system
     mkdir /data
     mkdir /data/property
     mkdir /cache
+    mount tmpfs tmpfs /tmp
 
     chown root root /data/property
     chmod 0700 /data/property
 
     chown root shell /tmp
     chmod 0775 /tmp
-    mount /tmp /tmp tmpfs
+
+    mkdir /mnt 0775 root system
+    mkdir /storage 0050 root sdcard_r
+    mount tmpfs tmpfs /storage mode=0050,uid=0,gid=1028
+
+    # See storage config details at http://source.android.com/tech/storage/
+    mkdir /mnt/shell 0700 shell shell
 
     write /proc/sys/vm/legacy_va_layout 0
     write /proc/sys/kernel/randomize_va_space 2
+
+    # Directory for putting things only root should see.
+    mkdir /mnt/secure 0700 root root
+
+    # Create private mountpoint so we can MS_MOVE from staging
+    mount tmpfs tmpfs /mnt/secure mode=0700,uid=0,gid=0
+
+    # Directory for staging bindmounts
+    mkdir /mnt/secure/staging 0700 root root
+
+    # Fuse public mount points.
+    mkdir /mnt/fuse 0700 root system
+    mount tmpfs tmpfs /mnt/fuse mode=0775,gid=1000
 
 on post-fs-data
 # insmod kernel modules
@@ -36,7 +60,7 @@ on post-fs-data
 on fs
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /dev/block/mmcblk0p10
-    
+
     # verfiy filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
 
@@ -59,7 +83,13 @@ on boot
 
     class_start default
 
+on property:sys.powerctl=*
+    powerctl ${sys.powerctl}
+
 service ueventd /sbin/ueventd
+    critical
+
+service healthd /sbin/healthd -n
     critical
 
 service console /sbin/sh
@@ -73,8 +103,16 @@ on property:ro.debuggable=1
 
 service recovery /sbin/recovery-loader
 
+service setup_adbd /sbin/setup_adbd
+    oneshot
+
 service adbd /sbin/adbd recovery
     disabled
+    socket adbd stream 660 system system
+
+service vold /sbin/minivold
+    socket vold stream 0660 root mount
+    ioprio be 2
 
 # Always start adbd on userdebug and eng builds
 # In recovery, always run adbd as root.

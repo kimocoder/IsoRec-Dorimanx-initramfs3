@@ -11,14 +11,6 @@ $BB chmod -R 777 /proc/
 # protecting fuelgauge reset trigger.
 $BB chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
 
-$BB rm -rf /emmc
-$BB mkdir /emmc
-$BB chmod -R 777 /emmc
-
-$BB rm -rf /sdcard
-$BB mkdir /sdcard
-$BB chmod -R 777 /sdcard
-
 $BB mkdir /emmc-tmp
 $BB chmod -R 777 /emmc-tmp
 
@@ -66,11 +58,11 @@ echo "/dev/block/mmcblk0p11" > /sys/devices/virtual/android_usb/android0/f_mass_
 if [ -e /dev/block/mmcblk1p1 ]; then
 	echo "/dev/block/mmcblk1p1" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
 	$BB mount -t vfat /dev/block/mmcblk0p11 /emmc-tmp;
-	$BB mount -t auto /dev/block/mmcblk1p1 /sdcard;
-	if [ ! -e /sdcard/.android_secure ]; then
-		mkdir /sdcard/.android_secure;
+	$BB mount -t auto /dev/block/mmcblk1p1 /storage/sdcard1;
+	if [ ! -e /storage/sdcard1/.android_secure ]; then
+		mkdir /storage/sdcard1/.android_secure;
 	fi;
-	$BB mount --bind /emmc-tmp/.android_secure /sdcard/.android_secure;
+	$BB mount --bind /emmc-tmp/.android_secure /storage/sdcard1/.android_secure;
 	# for now set DEADLINE gov for External SD to fix file transfer via USB
 	echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
 fi;

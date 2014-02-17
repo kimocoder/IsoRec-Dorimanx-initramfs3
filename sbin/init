@@ -2,7 +2,7 @@
 cd /;
 
 BB=/sbin/busybox
-$BB chmod 6755 $BB;
+$BB chmod 6755 /sbin/recovery;
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;
@@ -553,22 +553,22 @@ JBSAMMY2=$(find /system/lib/lib_Samsung_Resampler.so | wc -l);
 USER_ACTIONS()
 {
 	if [ "$JBSAMMY" -eq "1" ]; then
-		stop adbd;
+#		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
-		start adbd;
+#		start adbd;
 	elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
-		stop adbd;
+#		stop adbd;
 		$BB cp -a /sbin/adbd.cm10.2 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
-		start adbd;
+#		start adbd;
 	elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
-		stop adbd;
+#		stop adbd;
 		$BB cp -a /sbin/adbd.cm11 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
-		start adbd;
-	else
-		start adbd;
+#		start adbd;
+#	else
+#		start adbd;
 	fi;
 
 	# only if asked by user via stweaks

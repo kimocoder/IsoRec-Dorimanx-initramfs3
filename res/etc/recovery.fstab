@@ -1,18 +1,24 @@
-/boot		emmc		/dev/block/mmcblk0p5
-/recovery	emmc		/dev/block/mmcblk0p6
+# Android fstab file.
+#<src>                                      <mnt_point>             <type>    <mnt_flags and options>                                   <fs_mgr_flags>
+# The filesystem that contains the filesystem checker binary (typically /system) cannot
+# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+# data partition must be located at the bottom for supporting device encryption
 
-/efs		ext4		/dev/block/mmcblk0p1      
-/cache		ext4		/dev/block/mmcblk0p7
-/system		ext4		/dev/block/mmcblk0p9
-/data		ext4		/dev/block/mmcblk0p10
-/sd-ext		ext4		/dev/block/mmcblk0p12
+/dev/block/mmcblk0p9                        /system                 ext4      ro,noatime                                                wait
+/dev/block/mmcblk0p7                        /cache                  ext4      noatime,nosuid,nodev,journal_async_commit,errors=panic    wait,check_spo
+/dev/block/mmcblk0p1                        /efs                    ext4      noatime,nosuid,nodev,journal_async_commit,errors=panic    wait,check_spo
+/dev/block/mmcblk0p10                       /data                   ext4      noatime,nosuid,nodev,discard,noauto_da_alloc,journal_async_commit,errors=panic    wait,check_spo,encryptable=/efs/metadata
+/dev/block/mmcblk0p12                       /preload                ext4      noatime,nosuid,nodev,journal_async_commit                 wait
 
-/emmc		vfat		/dev/block/mmcblk0p11
-/sdcard		auto		/dev/block/mmcblk1p1
+# vold-managed volumes ("block device" is actually a sysfs devpath)
+/devices/platform/dw_mmc/mmc_host/mmc0/mmc0     auto    auto    defaults        voldmanaged=sdcard0:11,nonremovable,noemulatedsd
+/devices/platform/s3c-sdhci.2/mmc_host/mmc1     auto    auto    defaults        voldmanaged=sdcard1:auto
+/devices/platform/s3c_otghcd/usb                auto    auto    defaults        voldmanaged=usbdisk0:auto
 
-/storage/sdcard0	vfat	/dev/block/mmcblk0p11
-/storage/sdcard1	auto	/dev/block/mmcblk1p1
+# recovery
+/dev/block/mmcblk0p5                        /boot                   emmc      defaults      recoveryonly
+/dev/block/mmcblk0p6                        /recovery               emmc      defaults      recoveryonly
 
-/secondrom_cache	ext4	/mnt/.secondrom/.secondrom/cache.img	fs_options=loop,length=104857600
-/secondrom_data		ext4	/mnt/.secondrom/.secondrom/data.img	fs_options=loop,length=2147483648
-/secondrom_system	ext4	/dev/block/mmcblk0p12
+/mnt/.secondrom/.secondrom/cache.img        /secondrom_cache        ext4      noatime,nosuid,nodev,journal_async_commit                 wait
+/mnt/.secondrom/.secondrom/data.img         /secondrom_data         ext4      noatime,nosuid,nodev,discard,noauto_da_alloc,journal_async_commit    wait
+/dev/block/mmcblk0p12                       /secondrom_system       ext4      noatime,nosuid,nodev,journal_async_commit                 wait

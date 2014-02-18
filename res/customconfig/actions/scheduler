@@ -17,7 +17,7 @@ SCHED_SET()
 	echo "$BLOCK_GOV" > /sys/block/mmcblk0/queue/scheduler;
 
 	if [ -e /sys/block/mmcblk1/queue/scheduler ]; then
-		echo "$deadline" > /sys/block/mmcblk1/queue/scheduler;
+		echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
 	fi;
 }
 

@@ -77,9 +77,6 @@ BOOT_ROM()
 
 	# Start ROM VM boot!
 	start;
-
-	# start adb shell
-	start adbd;
 }
 
 if [ -e /tmp/wrong_kernel ]; then

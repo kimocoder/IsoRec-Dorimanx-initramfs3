@@ -26,7 +26,6 @@ $BB rm -rf /etc
 $BB mkdir /etc
 $BB cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
-#start adbd
 stop tvout
 
 echo "0" > /sys/class/mdnie/mdnie/scenario

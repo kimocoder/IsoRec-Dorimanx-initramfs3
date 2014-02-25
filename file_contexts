@@ -194,6 +194,8 @@
 /data/system/users/[0-9]+/wallpaper		u:object_r:wallpaper_file:s0
 # Downloaded files
 /data/data/com.android.providers.downloads/cache u:object_r:download_file:s0
+# Second ROM data
+/secondrom_data(/.*)?		u:object_r:system_data_file:s0
 #############################
 # efs files
 #
@@ -206,6 +208,8 @@
 /cache/.*\.restore	u:object_r:cache_backup_file:s0
 # LocalTransport (backup) uses this directory
 /cache/backup(/.*)?	u:object_r:cache_backup_file:s0
+# Second ROM cache
+/secondrom_cache(/.*)?		u:object_r:cache_file:s0
 #############################
 # sysfs files
 #

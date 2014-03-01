@@ -66,10 +66,6 @@ if [ -e /dev/block/mmcblk1p1 ]; then
 	echo "deadline" > /sys/block/mmcblk1/queue/scheduler;
 fi;
 
-if [ -f /cache/recovery/command ]; then
-	$BB cp /res/keys-samsung /res/keys
-	recovery-samsung
-else
-	echo 1 > /sbin/recovery-is-running
-	recovery
-fi;
+echo 1 > /sbin/recovery-is-running
+recovery
+

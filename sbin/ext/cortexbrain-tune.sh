@@ -812,39 +812,6 @@ if [ "$apply_cpu" != "update" ]; then
 fi;
 
 # ==============================================================
-# UKSM-TWEAKS
-# ==============================================================
-
-UKSMCTL()
-{
-	local state="$1";
-	local uksm_run_tmp="/sys/kernel/mm/uksm/run";
-	if [ ! -e "$uksm_run_tmp" ]; then
-		uksm_run_tmp="/dev/null";
-	fi;
-
-	if [ "$cortexbrain_uksm_control" == "on" ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
-		echo "1" > "$uksm_run_tmp";
-		renice -n 10 -p "$(pidof uksmd)";
-
-		if [ "$state" == "awake" ]; then
-			echo "500" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
-			echo "medium" > /sys/kernel/mm/uksm/cpu_governor;
-
-			log -p i -t "$FILE_NAME" "*** uksm: awake, sleep=0,5sec, max_cpu=50% ***";
-
-		elif [ "$state" == "sleep" ]; then
-			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
-			echo "quiet" > /sys/kernel/mm/uksm/cpu_governor;
-
-			log -p i -t "$FILE_NAME" "*** uksm: sleep, sleep=1sec, max_cpu=1% ***";
-		fi;
-	else
-		echo "0" > "$uksm_run_tmp";
-	fi;
-}
-
-# ==============================================================
 # GLOBAL-FUNCTIONS
 # ==============================================================
 
@@ -1552,7 +1519,6 @@ AWAKE_MODE()
 			TWEAK_HOTPLUG_ECO "awake";
 			MEGA_BOOST_CPU_TWEAKS;
 			LOGGER "awake";
-			UKSMCTL "awake";
 			MALI_TIMEOUT "wake_boost";
 			BUS_THRESHOLD "wake_boost";
 #			KERNEL_SCHED "awake";
@@ -1637,7 +1603,6 @@ SLEEP_MODE()
 			IO_SCHEDULER "sleep";
 			BUS_THRESHOLD "sleep";
 #			KERNEL_SCHED "sleep";
-			UKSMCTL "sleep";
 			NET "sleep";
 			WIFI "sleep";
 			BATTERY_TWEAKS;

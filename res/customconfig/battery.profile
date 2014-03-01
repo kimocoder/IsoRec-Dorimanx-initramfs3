@@ -118,7 +118,6 @@ dirty_background_ratio=15
 dirty_ratio=20
 zramtweaks=4
 swappiness=0
-cortexbrain_uksm_control=off
 mali_use_vpll=off
 mali_gpu_utilization_timeout=500
 GPUFREQ1=108

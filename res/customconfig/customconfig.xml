@@ -439,10 +439,6 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable Ultra KSM Control. This will merge some memory but need cpu-power + battery. This depends on cortex background, so you have to stop and start the servive or reboot your phone." name="Ultra KSM Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
-
-		<button description="Ultra KSM state check" name="Ultra KSM STATS" action="push-actions/uksmstats" label="Ultra KSM STATS"/>
-
 	</settingsPane>
 
 </settingsTab>

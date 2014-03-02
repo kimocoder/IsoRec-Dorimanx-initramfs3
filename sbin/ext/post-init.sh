@@ -27,6 +27,9 @@ echo "-1000" > /proc/1/oom_score_adj;
 # set sysrq to 2 = enable control of console logging level as with CM-KERNEL
 echo "2" > /proc/sys/kernel/sysrq;
 
+# bypass for reboot command till fixed.
+rm -f /sbin/reboot;
+
 PIDOFINIT=$(pgrep -f "/sbin/ext/post-init.sh");
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/"$i"/oom_score_adj;

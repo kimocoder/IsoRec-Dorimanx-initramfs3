@@ -153,6 +153,9 @@
 /system/bin/dnsmasq     u:object_r:dnsmasq_exec:s0
 /system/bin/hostapd     u:object_r:hostapd_exec:s0
 /system/bin/clatd	u:object_r:clatd_exec:s0
+# Second ROM system files
+/secondrom_system(/.*)?	u:object_r:system_file:s0
+/preload(/.*)?		u:object_r:system_file:s0
 #############################
 # Vendor files
 #

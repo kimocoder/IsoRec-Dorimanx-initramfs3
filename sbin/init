@@ -597,6 +597,7 @@ BOOTROM()
 {
 	USER_ACTIONS;
 	$BB rm -f /sbin/mount;
+	$BB rm -f /sbin/start;
 	$BB chmod -R 777 /tmp/;
 	exec /sbin/init.samsung;
 }

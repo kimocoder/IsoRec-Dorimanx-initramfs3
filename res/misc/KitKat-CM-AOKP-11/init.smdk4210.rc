@@ -29,8 +29,6 @@ on init
 on fs
     mount_all /fstab.smdk4210
 
-    setprop ro.crypto.fuse_sdcard true
-
     mkdir /efs/bluetooth
     mkdir /efs/wifi
     chown radio system /efs/bluetooth
@@ -327,13 +325,10 @@ service cpboot-daemon /sbin/cbd -d -p 8
     group radio cache inet misc audio sdcard_rw log sdcard_r
 
 service p2p_supplicant /system/bin/wpa_supplicant \
-        -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
-        -I/system/etc/wifi/wpa_supplicant.conf \
-        -O/data/misc/wifi/sockets -N \
+        -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
         -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin \
-        -I/system/etc/wifi/wpa_supplicant.conf \
         -puse_p2p_group_interface=1 \
-        -g@android:wpa_wlan0
+        -O/data/misc/wifi/sockets -g@android:wpa_wlan0
 #   we will start as root and wpa_supplicant will switch to user wifi
 #   after setting up the capabilities required for WEXT
 #   user wifi
@@ -346,9 +341,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
 service wpa_supplicant /system/bin/wpa_supplicant \
         -Dnl80211 -iwlan0 -e/data/misc/wifi/entropy.bin \
         -c/data/misc/wifi/wpa_supplicant.conf \
-        -I/system/etc/wifi/wpa_supplicant.conf \
-        -O/data/misc/wifi/sockets \
-        -g@android:wpa_wlan0
+        -O/data/misc/wifi/sockets -g@android:wpa_wlan0
 #   we will start as root and wpa_supplicant will switch to user wifi
 #   after setting up the capabilities required for WEXT
 #   user wifi
@@ -395,14 +388,14 @@ service bdaddr /system/bin/bdaddr_read
     disabled
     oneshot
 
-service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard0 /storage/sdcard0
+service fuse_sdcard0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard0 /storage/sdcard0
     class late_start
     disabled
 
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
     class late_start
     disabled
 
-service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk0 /storage/usbdisk0
+service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk0 /storage/usbdisk0
     class late_start
     disabled

@@ -73,7 +73,7 @@ fi;
 if [ "$install_root" == "on" ]; then
 	if [ "$NEW_SU" -eq "0" ]; then
 		echo "SuperSU already exists";
-		$BB chmod 6755 /system/xbin/su;
+		$BB chmod 06755 /system/xbin/su;
 		if [ -e /system/xbin/daemonsu ]; then
 			$BB chmod 6755 /system/xbin/daemonsu;
 			if [ -e /system/etc/install-recovery.sh ]; then
@@ -114,7 +114,7 @@ if [ "$install_root" == "on" ]; then
 				$BB cp /system/chainfire/xbin/chattr /system/xbin/;
 				$BB chmod 6755 /system/xbin/chattr;
 			fi;
-			$BB chmod 6755 /system/xbin/su;
+			$BB chmod 06755 /system/xbin/su;
 			$BB chmod 6755 /system/xbin/daemonsu;
 			$BB chmod 644 /system/app/SuperSU.apk;
 			$BB chmod 644 /system/app/SuperSUNoNag-v1.00.apk;
@@ -131,7 +131,7 @@ if [ "$install_root" == "on" ]; then
 				$BB cp /system_pri_rom/chainfire/xbin/chattr /system/xbin/;
 				$BB chmod 6755 /system/xbin/chattr;
 			fi;
-			$BB chmod 6755 /system/xbin/su;
+			$BB chmod 06755 /system/xbin/su;
 			$BB chmod 6755 /system/xbin/daemonsu;
 			$BB chmod 644 /system/app/SuperSU.apk;
 			$BB chmod 644 /system/app/SuperSUNoNag-v1.00.apk;
@@ -143,9 +143,9 @@ if [ "$install_root" == "on" ]; then
 			$BB cp -a /res/misc/payload/su /system/bin/.ext/su;
 			$BB cp -a /res/misc/payload/su /system/xbin/su;
 			$BB chown 0.0 /system/xbin/su;
-			$BB chmod 6755 /system/xbin/su;
+			$BB chmod 06755 /system/xbin/su;
 			$BB chown 0.0 /system/bin/.ext/su;
-			$BB chmod 6755 /system/bin/.ext/su;
+			$BB chmod 06755 /system/bin/.ext/su;
 
 			# extract super user app
 			$BB cp -a /res/misc/payload/SuperSU.apk /system/app/;

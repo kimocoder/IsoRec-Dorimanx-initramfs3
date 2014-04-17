@@ -41,7 +41,7 @@ $BB chown system.cache /cache/recovery
 
 cd /
 $BB mkdir -p /mnt/.secondrom
-$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
+$BB mount -t auto /dev/block/mmcblk0p11 /mnt/.secondrom
 $BB mkdir /mnt/.secondrom/.secondrom
 $BB rm -rf /secondrom_cache
 $BB mkdir /secondrom_cache
@@ -50,13 +50,13 @@ $BB mkdir /secondrom_data
 $BB mkdir /secondrom_system
 
 echo "75" > /sys/class/timed_output/vibrator/pwm_value
-echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey
+echo "102" > /sys/devices/virtual/sec/sec_key/set_homekey
 
 # Enable Dual Mount in recovery! and fix .android_secure backup and restore.
 echo "/dev/block/mmcblk0p11" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
 if [ -e /dev/block/mmcblk1p1 ]; then
 	echo "/dev/block/mmcblk1p1" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
-	$BB mount -t vfat /dev/block/mmcblk0p11 /emmc-tmp;
+	$BB mount -t auto /dev/block/mmcblk0p11 /emmc-tmp;
 	$BB mount -t auto /dev/block/mmcblk1p1 /storage/sdcard1;
 	if [ ! -e /storage/sdcard1/.android_secure ]; then
 		mkdir /storage/sdcard1/.android_secure;

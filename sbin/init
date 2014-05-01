@@ -369,12 +369,12 @@ TUNE_PARTITION()
 	sh -c "/sbin/e2fsck -nv $DEVICE" > $LOG_TMP;
 	cat $LOG_TMP >> $LOG;
 	echo "" >> $LOG;
-	if [ "$(cat $LOG_TMP | grep "clean" | wc -l)" -ge "0" ]; then
+	if [ "$(cat $LOG_TMP | grep "clean" | wc -l)" -eq "0" ]; then
 		NEED_CHECK;
-		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG; 
+		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG;
 		echo "0" > $LOG_TMP;
 	else
-		echo "DEVICE $DEVICE IS CLEAN" >> $LOG; 
+		echo "DEVICE $DEVICE IS CLEAN" >> $LOG;
 		echo "1" > $LOG_TMP;
 	fi;
 	echo "" >> $LOG;
@@ -440,11 +440,11 @@ PARTITION_TUNING()
 	$BB umount -l $DIR_PRELOAD;
 
 	TUNE_PARTITION $DEVICE_CACHE $LOG_CACHE;
-	
+
 	TUNE_PARTITION $DEVICE_DATA $LOG_DATA;
-	
+
 	TUNE_PARTITION $DEVICE_SYSTEM $LOG_SYSTEM;
-	
+
 	if [ "$SECONDROM" -eq "0" ]; then
 		TUNE_PARTITION $DEVICE_PRELOAD $LOG_PRELOAD;
 	fi;

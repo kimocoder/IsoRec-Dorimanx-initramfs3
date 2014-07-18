@@ -91,9 +91,12 @@ $BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit /dev/block/mmcblk0p
 $BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit /dev/block/mmcblk0p9 /system;
 
 # replace old /sbin/e2fsck 1.41.14 (22-Dec-2010) in sbin with the /system/bin/e2fsck 1.42.8 (20-Jun-2013)
-cp /system/bin/e2fsck /sbin/e2fsck;
-cp /system/bin/tune2fs.static /sbin/tune2fs.static;
-cp /system/bin/mount.exfat-fuse /sbin/mount.exfat-fuse;
+if [ -e /system/bin/e2fsck ]; then
+	cp /system/bin/e2fsck /sbin/e2fsck;
+fi;
+if [ -e /system/bin/mount.exfat-fuse ]; then
+	cp /system/bin/mount.exfat-fuse /sbin/mount.exfat-fuse;
+fi;
 
 # check what type of fs sdcards have
 FS_SDCARD0=$(eval $(/sbin/blkid /dev/block/mmcblk0p11 | /sbin/busybox cut -c 24-); /sbin/busybox echo $TYPE);
@@ -104,7 +107,7 @@ fi;
 # prevent from media storage to dig in clockworkmod backup dir
 # added /mnt/tmp/android/.nomedia because my gallery is showing pic from there and media scanner has nothing to sniff around there
 if [ "$FS_SDCARD0" == "exfat" ]; then
-	/system/bin/mount.exfat-fuse /dev/block/mmcblk0p11 /mnt/tmp;
+	sh -c "/system/bin/mount.exfat-fuse /dev/block/mmcblk0p11 /mnt/tmp";
 else
 	$BB mount -t $FS_SDCARD0 /dev/block/mmcblk0p11 /mnt/tmp;
 fi;
@@ -121,7 +124,7 @@ EXSDCARD()
 	if [ -e /dev/block/mmcblk1p1 ]; then
 		# added /mnt/tmp2/android/.nomedia because my gallery is showing pic from there and media scanner has nothing to sniff around there
 		if [ "$FS_SDCARD1" == "exfat" ]; then
-			/system/bin/mount.exfat-fuse /dev/block/mmcblk1p1 /mnt/tmp2;
+			sh -c "/system/bin/mount.exfat-fuse /dev/block/mmcblk1p1 /mnt/tmp2";
 		else
 			$BB mount -t $FS_SDCARD1 /dev/block/mmcblk1p1 /mnt/tmp2;
 		fi;
@@ -228,6 +231,21 @@ fi;
 # Partition global tuning!
 #############################
 
+# partition fix by forcing full scan and repair
+PARTITION_FIX()
+{
+	local DEVICE=$1;
+	local LOG=$2;
+
+	echo "Fixing partitions..."  >> $LOG;
+	echo ""  >> $LOG;
+	sh -c "/sbin/e2fsck -p $DEVICE" >> $LOG;
+	sh -c "/sbin/e2fsck -fyv $DEVICE" >> $LOG;
+	echo ""  >> $LOG;
+	echo "Fixing partitions ends."  >> $LOG;
+	echo "0" > /tmp/need_check_part;
+}
+
 # sdcards fix
 SDCARD_FIX()
 {
@@ -235,7 +253,6 @@ SDCARD_FIX()
         local LOG_SDCARD1="/log-sdcard1";
         local FIX_VFAT_BINARY="/sbin/fsck_msdos";
         local FIX_EXFAT_BINARY="/sbin/fsck.exfat";
-        local FIX_EXT4_BINARY="/sbin/e2fsck";
         local DEVICE_SDCARD0="/dev/block/mmcblk0p11";
         local DEVICE_SDCARD1="/dev/block/mmcblk1p1";
 
@@ -288,21 +305,6 @@ DALVIK_CLEAN()
 	$BB rm -f $DIR_DATA/dalvik-cache/*;
 	sync;
 	$BB umount $DIR_DATA;
-}
-
-# partition fix by forcing full scan and repair
-PARTITION_FIX()
-{
-	local DEVICE=$1;
-	local LOG=$2;
-
-	echo "Fixing partitions..."  >> $LOG;
-	echo ""  >> $LOG;
-	sh -c "/sbin/e2fsck -p $DEVICE" >> $LOG;
-	sh -c "/sbin/e2fsck -fyv $DEVICE" >> $LOG;
-	echo ""  >> $LOG;
-	echo "Fixing partitions ends."  >> $LOG;
-	echo "0" > /tmp/need_check_part;
 }
 
 TUNE_PARTITION()
@@ -362,15 +364,15 @@ TUNE_PARTITION()
 
 	echo "Checking if device has errors..." >> $LOG;
 	echo "" >> $LOG;
-	sh -c "/sbin/e2fsck -nfv $DEVICE" > $LOG_TMP;
+	sh -c "/sbin/e2fsck -nv $DEVICE" > $LOG_TMP;
 	cat $LOG_TMP >> $LOG;
 	echo "" >> $LOG;
-	if [ "$(cat $LOG_TMP | grep '? no' | wc -l)" -ge "1" ] || [ "$(cat $LOG_TMP | grep 'Pass 5' | wc -l)" -eq "0" ] ; then
+	if [ "$(cat $LOG_TMP | grep "clean" | wc -l)" -eq "0" ]; then
 		NEED_CHECK;
-		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG; 
+		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG;
 		echo "0" > $LOG_TMP;
 	else
-		echo "DEVICE $DEVICE IS CLEAN" >> $LOG; 
+		echo "DEVICE $DEVICE IS CLEAN" >> $LOG;
 		echo "1" > $LOG_TMP;
 	fi;
 	echo "" >> $LOG;
@@ -436,11 +438,11 @@ PARTITION_TUNING()
 	$BB umount -l $DIR_PRELOAD;
 
 	TUNE_PARTITION $DEVICE_CACHE $LOG_CACHE;
-	
+
 	TUNE_PARTITION $DEVICE_DATA $LOG_DATA;
-	
+
 	TUNE_PARTITION $DEVICE_SYSTEM $LOG_SYSTEM;
-	
+
 	if [ "$SECONDROM" -eq "0" ]; then
 		TUNE_PARTITION $DEVICE_PRELOAD $LOG_PRELOAD;
 	fi;
@@ -586,7 +588,7 @@ ln -s /system/bin/ /bin
 
 # adding latest vendor binary from 3.6.RC6 kernel for all! tested working great
 mkdir -p /system/vendor/firmware;
-$BB cp -a /res/misc/vendor/firmware/mfc_fw.bin /system/vendor/firmware/mfc_fw.bin;
+$BB mv /res/misc/vendor/firmware/mfc_fw.bin /system/vendor/firmware/mfc_fw.bin;
 $BB chmod 755 /system/vendor/firmware/mfc_fw.bin;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
@@ -690,11 +692,6 @@ BOOTROM()
 	exec /sbin/init.samsung;
 }
 
-# extract hacked sql
-#$BB xzcat /sql.tar.xz > /sql.tar;
-#$BB tar -xvf /sql.tar;
-#$BB rm /sql.ta*;
-
 POWER_SQL_JB()
 {
 	$BB chmod 644 /system/lib/libsqlite.so;
@@ -765,6 +762,8 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 	POWER_SAMMY_SQL_JB;
 	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
 	if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
 		echo "172" > /sys/devices/virtual/sec/sec_key/set_homekey;
 	fi;
@@ -790,6 +789,8 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	elif [ "$CM_AOKP_BAM" -eq "1" ]; then
 		$BB cp -a res/misc/JellyB-CM-AOKP-BAM-4-3/* /;
 	fi;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 
@@ -809,6 +810,8 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	elif [ "$CM_AOKP_BAM" -eq "1" ]; then
 		$BB cp -a res/misc/KitKat-CM-AOKP-BAM-4-4/* /;
 	fi;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 	# for sbin/ext/post_init.sh
@@ -821,6 +824,8 @@ elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.1-installed;
 

@@ -1,5 +1,5 @@
 # su daemon
-service su_daemon /system/xbin/su --daemon
+service su_daemon /system/xbin/su --auto-daemon
     oneshot
 
 on property:persist.sys.root_access=0

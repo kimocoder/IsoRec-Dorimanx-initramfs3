@@ -13,9 +13,11 @@ import /init.environ.rc
 import /init.usb.rc
 import /init.smdk4210.rc
 import /init.trace.rc
+import /init.smdk4210.dm_kernel.rc
 
 on early-init
     # Set init and its forked children's oom_adj.
+    write /proc/1/oom_score_adj -1000
     write /proc/1/oom_adj -16
 
     # Set the security context for the init process.
@@ -98,6 +100,7 @@ loglevel 3
     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
+    write /proc/sys/vm/legacy_va_layout 0
     write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/kptr_restrict 0
     write /proc/sys/kernel/dmesg_restrict 0
@@ -355,25 +358,6 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
-
-# Set these so we can remotely update SELinux policy
-#   chown system system /sys/fs/selinux/load
-#   chown system system /sys/fs/selinux/enforce
-
-# Define TCP buffer sizes for various networks
-#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.hspa    4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hsupa   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hsdpa   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-    setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
-    setprop net.tcp.buffersize.evdo_b  4096,87380,704512,4096,16384,262144
 
 # Assign TCP buffer thresholds to be ceiling value of technology maximums
 # Increased technology maximums should be reflected here.

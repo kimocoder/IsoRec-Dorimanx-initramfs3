@@ -1,5 +1,5 @@
 #!/sbin/busybox sh
-# Clear Cache script
+# Trim Partition script
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;

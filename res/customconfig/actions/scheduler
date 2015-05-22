@@ -58,6 +58,10 @@ case "${scheduler}" in
 		BLOCK_GOV=fifo;
 		SCHED_SET;
 	;;
+	fiops)
+		BLOCK_GOV=fiops;
+		SCHED_SET;
+	;;
 	*)
 		scheduler=row;
 	;;

@@ -62,6 +62,10 @@ case "${scheduler}" in
 		BLOCK_GOV=fiops;
 		SCHED_SET;
 	;;
+	tripndroid)
+		BLOCK_GOV=tripndroid;
+		SCHED_SET;
+	;;
 	*)
 		scheduler=row;
 	;;

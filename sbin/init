@@ -100,10 +100,8 @@ fi;
 
 # check what type of fs sdcards have
 FS_SDCARD0=$(eval $(/sbin/blkid /dev/block/mmcblk0p11 | /sbin/busybox cut -c 24-); /sbin/busybox echo $TYPE);
-echo "$FS_SDCARD0" > /tmp/sdcard_fs_check;
 if [ -e /dev/block/mmcblk1p1 ]; then
 	FS_SDCARD1=$(eval $(/sbin/blkid /dev/block/mmcblk1p1 | /sbin/busybox cut -c 23-); /sbin/busybox echo $TYPE);
-	echo "$FS_SDCARD1" >> /tmp/sdcard_fs_check;
 fi;
 
 # prevent from media storage to dig in clockworkmod backup dir
@@ -369,7 +367,7 @@ TUNE_PARTITION()
 	sh -c "/sbin/e2fsck -nv $DEVICE" > $LOG_TMP;
 	cat $LOG_TMP >> $LOG;
 	echo "" >> $LOG;
-	if [ "$(cat $LOG_TMP | grep "clean" | wc -l)" -eq "0" ]; then
+	if [ "$(cat $LOG_TMP | grep 'clean' | wc -l)" -eq "0" ]; then
 		NEED_CHECK;
 		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG;
 		echo "0" > $LOG_TMP;

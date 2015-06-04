@@ -965,13 +965,11 @@
 
 		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
-		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
-
 	</settingsPane>
 
 	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." name="Partitions Scan">
 
-		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data will be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
+		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data may be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
 
 	</settingsPane>
 
@@ -979,9 +977,7 @@
 
 <settingsTab name="KERNEL-UPDATE">
 
-	<settingsPane description="Check if there is a new kernel-update available." name="Kernel-Update">
-
-		<button description="Check for Update" name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
+	<settingsPane description="Get the latest kernel update from the XDA website! The Update feature has not been fixed yet." name="Kernel-Update">
 
 	</settingsPane>
 

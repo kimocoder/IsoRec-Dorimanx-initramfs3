@@ -254,9 +254,6 @@ nohup /sbin/ext/cortexbrain-tune.sh;
 CORTEX=$(pgrep -f "/sbin/ext/cortexbrain-tune.sh");
 echo "-900" > /proc/"$CORTEX"/oom_score_adj;
 
-# enable screen color mode
--echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
-
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
 	mkdir -p /system/etc/init.d/

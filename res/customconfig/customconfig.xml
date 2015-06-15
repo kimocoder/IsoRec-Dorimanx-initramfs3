@@ -351,14 +351,14 @@
 
 	<settingsPane description="Here you can tune IO settings managed by Kernel" name="IO Tuning">
 
-		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if IO-Tweaks tweak is enabled! (Default: 128 kB) !!! Depends on CortexBrain-Background-Process !!!" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
+		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. IO read-ahead is a cache for frequently used files, having a larger cache usually means faster IO speed. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if IO-Tweaks tweak is enabled! (Default: 128 kB) !!! Depends on CortexBrain-Background-Process !!!" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
 			<spinnerItem name="AUTO" value="0"/> 
 			<spinnerItem name="128 kB" value="128"/> 
 			<spinnerItem name="256 kB" value="256"/> 
 			<spinnerItem name="512 kB" value="512"/> 
 			<spinnerItem name="1024 kB" value="1024"/> 
 			<spinnerItem name="2048 kB" value="2048"/> 
-			<spinnerItem name="2560 kB" value="2560"/> 
+			<spinnerItem name="4096 kB" value="4096"/> 
 		</spinner>
 
 		<spinner description="This will set the default AWAKE IO scheduler for internal, system, data and external sdcard. (Default: SIO)" name="Default Awake IO Scheduler" action="scheduler">
@@ -695,7 +695,7 @@
 
 		<settingsPane description="Congestion control concerns controlling traffic entry into a telecommunications network, so as to avoid congestive collapse by attempting to avoid oversubscription of any of the processing or link capabilities of the intermediate nodes and networks and taking resource reducing steps." name="Net Congestion Control">
 
-		<spinner description="Allow USER to READ GOOGLE! Then come here and select what he thinks is BEST for him for NET Congestion Control. If USER is lazy to read Google!, then leave it as default (CUBIC or BIC depend on model) and don't ask what is the difference!" name="Net Congestion Control" action="generic /proc/sys/net/ipv4/tcp_congestion_control">
+		<spinner description="Allows user to change TCP algorithm. If you are unsure of what to set here, just keep it to the defaults (Default: Cubic). Otherwise, I highly recommend using Westwood. If you experience problems, change this back to Cubic." name="Net Congestion Control" action="generic /proc/sys/net/ipv4/tcp_congestion_control">
 			<spinnerItem name="Set CUBIC" value="cubic"/> 
 			<spinnerItem name="Set RENO" value="reno"/> 
 			<spinnerItem name="Set WESTWOOD" value="westwood"/> 

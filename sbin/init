@@ -608,14 +608,14 @@ cd /;
 
 # move new Kernel modules to /system/lib/modules if possible
 SYSTEM_FREE=$($BB df -h | $BB grep system | $BB cut -d " " -f14 | $BB cut -c 1-3);
-if [ "$SYSTEM_FREE" -le "492" ]; then
+# if [ "$SYSTEM_FREE" -le "492" ]; then
 	$BB mv /lib/modules/*.ko /system/lib/modules/;
 	$BB chmod 755 /system/lib/modules/*.ko;
 	$BB ln -s /system/lib/modules/* /lib/modules/;
 	$BB insmod /system/lib/modules/exfat.ko;
-else
-	$BB insmod /lib/modules/exfat.ko;
-fi;
+# else
+#	$BB insmod /lib/modules/exfat.ko;
+# fi;
 
 # mount external sdcard
 EXSDCARD;
@@ -632,6 +632,7 @@ CM_AOKP_10_JB=$(find /system/bin/wfd | wc -l);
 CM_AOKP_10_JB=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.2" | wc -l);
 CM_AOKP_4_3_JB=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l);
 CM_AOKP_11_KITKAT=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=4.4" | wc -l);
+CM_AOKP_12_1_LP=$($BB cat /system/build.prop | $BB grep "ro.build.version.release=5.1" | wc -l);
 CM_AOKP_PAC=$(find /system/framework/framework-pac.jar | wc -l);
 CM_AOKP_BAM=$(find /system/framework/framework-bam.jar | wc -l);
 JBSAMMY=$(find /system/lib/libSamsungAnimation.so | wc -l);
@@ -647,6 +648,9 @@ USER_ACTIONS()
 		$BB chmod 755 /sbin/adbd;
 	elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 		$BB cp -a /sbin/adbd.cm11 /sbin/adbd;
+		$BB chmod 755 /sbin/adbd;
+	elif [ "$CM_AOKP_12_1_LP" -eq "1" ]; then
+		$BB cp -a /sbin/adbd.cm12.1 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
 	fi;
 
@@ -814,6 +818,21 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	fi;
 	$BB rm -rf /res/misc/JellyB-*;
 	$BB rm -rf /res/misc/KitKat-*;
+	# for sbin/ext/install.sh
+	echo "1" > /tmp/cm10.2-installed;
+	# for sbin/ext/post_init.sh
+	echo "1" > /tmp/cm11-installed;
+
+	SECROM_FUNCTION_AOSP;
+
+elif [ "$CM_AOKP_12_1_LP" -eq "1" ]; then
+	echo "3" > /proc/sys/kernel/rom_feature_set;
+	# Injecting KitKat Modded by FusionJack, SUPER libsqlite!
+#	POWER_SQL_LOLLIPOP;
+	$BB cp -a /res/misc/Lollipop-CM-AOKP-12.1/* /;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
+	$BB rm -rf /res/misc/Lollipop-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 	# for sbin/ext/post_init.sh

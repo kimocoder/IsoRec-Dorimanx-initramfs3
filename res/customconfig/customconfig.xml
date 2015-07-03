@@ -120,7 +120,9 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
-			<spinnerItem name="zzmanX" value="zzmanX"/> 
+			<spinnerItem name="zzmanX" value="zzmanX"/>
+			<spinnerItem name="performance" value="performance"/>
+ 
 		</spinner>
 
 		<spinner description="CPU Governor Hot plugging Configuration. if this options is set to Disabled, Second core will always OFF or ON, depend on last condition, if set to Enabled Auto, cortex will choose the needed hotplug code for active GOV, or you can force using Alucard HotPlug code, or Inteli HotPlug code, best leave it AUTO (Default: Enabled Auto)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
@@ -993,6 +995,8 @@
 	<settingsPane description="Debug to SD-Card sdcard" name="Bug-Report">
 
 		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
+
+		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
 
 	</settingsPane>
 

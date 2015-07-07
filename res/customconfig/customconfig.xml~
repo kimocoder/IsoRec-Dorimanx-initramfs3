@@ -120,7 +120,7 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
-			<spinnerItem name="zzmanX" value="zzmanX"/>
+			<spinnerItem name="zzmoove" value="zzmoove"/>
 			<spinnerItem name="performance" value="performance"/>
 		</spinner>
 
@@ -196,40 +196,6 @@
 			<spinnerItem name="12 Steps" value="1"/>
 			<spinnerItem name="10 Steps" value="2"/>
 			<spinnerItem name="8 Steps" value="3"/>
-		</spinner>
-
-	</settingsPane>
-
-	<settingsPane description="ZZMANX Gov Configuration, see descriptions" name="ZZMANX GOV CONFIGURATON">
-
-		<seekBar description="Max sampling down factor which should be set by momentum (0 disable momentum, possible range from sampling_down_factor up to 100000. (Default: 0)" name="sampling_down_max_mom" action="generic_cortex /tmp/sampling_down_max_mom" unit="int" min="0" reversed="false" step="10" max="100000"/>
-
-		<seekBar description="How fast the sampling down factor should be switched (possible values from 1 to 500. (Default: 50)" name="sampling_down_mom_sens" action="generic_cortex /tmp/sampling_down_mom_sens" unit="int" min="1" reversed="false" step="10" max="500"/>
-
-		<seekBar description="Hotplug threshold for cpu1 (0 disable core1, possible range from down_threshold up to 100) (Default: 68%)" name="up_threshold_hp_fst" action="generic_cortex /tmp/up_threshold_hp_fst" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Hotplug threshold for cpu1 (possible range from 11 to under up_threshold). (Default: 55%)" name="down_threshold_hp_fst" action="generic_cortex /tmp/down_threshold_hp_fst" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Hotplug up frequency threshold for core1. Possible values 0 disable and range from over down_threshold_hotplug_freq1 to max scaling frequency. (Default: 0 kHz)" name="up_threshold_hp_freq_fst" action="generic_cortex /tmp/up_threshold_hp_freq_fst" unit="kHz" min="0" reversed="false" step="100000" max="1600000"/>
-
-		<seekBar description="Hotplug down frequency threshold for core1. Possible values 0 disable and range from min scaling to under up_threshold_hotplug_freq1 frequency. (Default: 0 kHz)" name="down_threshold_hp_freq_fst" action="generic_cortex /tmp/down_threshold_hp_freq_fst" unit="kHz" min="0" reversed="false" step="100000" max="1600000"/>
-
-		<seekBar description="This modification makes the governor use two lookup tables holding current, next and previous frequency to directly get a correct target frequency instead of calculating target frequencies with up_threshold and step_up percentage. The two scaling lookup tables used contain different scaling steps/frequencies to achieve faster upscaling on higher CPU load. (Default: 75%)" name="smooth_up" action="generic_cortex /tmp/smooth_up" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Limit frequency. (possible values 0 disable limit, 100000 kHz - 1600000 kHz) (Default: 0 kHz)" name="freq_limit" action="generic_cortex /tmp/freq_limit" unit="kHz" min="0" reversed="false" step="100000" max="1600000"/>
-
-		<seekBar description="1-4 number of scaling jumps only for upscaling, 5-8 equivalent to 1-4 for up and down scaling. (Default: 0)" name="fast_scaling" action="generic_cortex /tmp/fast_scaling" unit="int" min="0" reversed="false" step="1" max="8"/>
-
-		<spinner description="Switch to enable/disable early demand functionality (possible values 0 disable or 1 enable. (Default: Disabled)" name="early_demand" action="generic_cortex /tmp/early_demand">
-			<spinnerItem name="Disabled" value="0"/> 
-			<spinnerItem name="Enabled" value="1"/> 
-		</spinner>
-
-		<seekBar description="Scale up frequency if the load goes up in one step of grad up value. (Default: 50%)" name="grad_up_threshold" action="generic_cortex /tmp/grad_up_threshold" unit="%" min="11" reversed="false" step="1" max="100"/>
-
-		<spinner description="Switch to enable/disable hotplugging (possible values are any value above 0 to disable hotplugging and 0 to enable it. (Default: Enabled)" name="disable_hotplug" action="generic_cortex /tmp/disable_hotplug">
-			<spinnerItem name="Enabled" value="0"/> 
-			<spinnerItem name="Disabled" value="1"/> 
 		</spinner>
 
 	</settingsPane>
@@ -746,16 +712,6 @@
 
 	</settingsPane>	
 
-	<settingsPane description="Here you can find some settings and options for your apps." name="Apps">
-
-		<button description="Click here to start fixing. Here you can run Fix Permissions, please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
-
-		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it is OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
-
-		<button description="Click here to start applications Database Optimization. Compacting, cleaning and indexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
-
-	</settingsPane>
-
 	<settingsPane description="WIFI Settings" name="WIFI">
 
 		<button description="Clean WIFI DHCP IP Lease. Push the button to activate!" name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
@@ -817,6 +773,16 @@
 
 	</settingsPane>
 
+	<settingsPane description="Here you can find some settings and options for your apps." name="Apps">
+
+		<button description="Click here to start fixing. Here you can run Fix Permissions, please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
+
+		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it is OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+
+		<button description="Click here to start applications Database Optimization. Compacting, cleaning and indexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
+
+	</settingsPane>
+
 	<settingsPane description="INIT.D" name="INIT.D">
 
 		<checkbox description="Enable or Disable INIT.D scripts RUN on boot. Many new ROMS are running the init.d scripts automatically. You can also force running the scripts, but if you run them and ROM runs them too, we have a problem: all scripts are running X2 times! To avoid conflicts, Stweaks RUN-control is disabled by default. If you know that your ROM is NOT supporting init.d script running, then turn it ON here and reboot." name="INIT.D Scripts RUN control" action="generic_cortex /tmp/init_d" label="Enable INIT.D scripts RUN-control"/>
@@ -826,18 +792,6 @@
 	<settingsPane description="Android Additional Logs" name="Logger">
 
 		<checkbox description="Enable or Disable Android Additional Logs (needs reboot)" name="Android Logger" action="generic_cortex /tmp/logger" label="Android Logger"/>
-
-	</settingsPane>
-
-	<settingsPane description="Remove OR Reinstall ROOT! You can have a ROOTED or not ROOTED phone." name="Root">
-
-		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! !!! Depends on CortexBrain-Background-Process !!!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
-
-		<button description="Root Uninstall. Click to remove Any ROOT installed + Busybox (kernel Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
-
-		<button description="Root check. Click to see if you have ROOT or not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
-
-		<checkbox description="If box is checked, root will be installed on the next restart." name="Auto-Install Root" action="generic_cortex /tmp/install_root" label="Auto-Install Root"/>
 
 	</settingsPane>
 
@@ -919,6 +873,7 @@
 </settingsTab>
 
 <settingsTab name="PARTITIONS">
+
 	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." name="Partitions Scan">
 
 		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data may be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
@@ -932,6 +887,22 @@
 		<checkbox description="Check and repair file system on every boot by auto. See the WARNING ABOVE! DO FULL BACKUP! this is the same thing! just every boot! if all clean then should be OK, Doesn't clean dalvik-cache" name="Check and repair file system on every boot" action="fix_fs_on_boot_auto" label="Check and repair file system on every boot"/>
 
 		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON or OFF"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="ROOT">
+
+	<settingsPane description="Remove OR Reinstall ROOT! You can have a ROOTED or not ROOTED phone." name="Root">
+
+		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! !!! Depends on CortexBrain-Background-Process !!!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
+
+		<button description="Root Uninstall. Click to remove Any ROOT installed + Busybox (kernel Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
+
+		<button description="Root check. Click to see if you have ROOT or not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
+
+		<checkbox description="If box is checked, root will be installed on the next restart." name="Auto-Install Root" action="generic_cortex /tmp/install_root" label="Auto-Install Root"/>
 
 	</settingsPane>
 

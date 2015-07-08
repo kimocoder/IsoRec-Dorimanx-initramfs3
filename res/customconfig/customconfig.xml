@@ -122,6 +122,7 @@
 			<spinnerItem name="sleepy" value="sleepy"/> 
 			<spinnerItem name="zzmoove" value="zzmoove"/>
 			<spinnerItem name="performance" value="performance"/>
+			<spinnerItem name="powersave" value="powersave"/>
 		</spinner>
 
 		<spinner description="CPU Governor Hot plugging Configuration. if this options is set to Disabled, Second core will always OFF or ON, depend on last condition, if set to Enabled Auto, cortex will choose the needed hotplug code for active GOV, or you can force using Alucard HotPlug code, or Inteli HotPlug code, best leave it AUTO (Default: Enabled Auto)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
@@ -265,6 +266,7 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
+			<spinnerItem name="powersave" value="powersave"/>
 		</spinner>
 
 	</settingsPane>

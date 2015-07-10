@@ -442,8 +442,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="66 MHz(vpll)" value="66"/> 
-			<spinnerItem name="54 MHz(vpll)" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the second GPU frequency step (Default: 160MHz) WARNING! 400, 440, 520 MHz needs 1300 mV - 1450 mV. (520Mhz stable on 1400mV+ if your chip can handle that) Above 1300 mV you risk to burn your chip!" name="GPU Frequency Step 2" action="gpu-freq 2">
@@ -455,8 +453,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="66 MHz(vpll)" value="66"/> 
-			<spinnerItem name="54 MHz(vpll)" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the third GPU frequency step. (Default: 200MHz) WARNING! 400, 440, 520 MHz needs 1300 mV - 1450 mV. (520Mhz stable on 1400mV+ if your chip can handle that) Above 1300 mV you risk to burn your chip!" name="GPU Frequency Step 3" action="gpu-freq 3">
@@ -468,8 +464,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="66 MHz(vpll)" value="66"/> 
-			<spinnerItem name="54 MHz(vpll)" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the fourth GPU frequency step. (Default: 267Mhz) WARNING! 400, 440, 520 MHz needs 1300 mV - 1450 mV. (520Mhz stable on 1400mV+ if your chip can handle that) Above 1300 mV you risk to burn your chip!" name="GPU Frequency Step 4" action="gpu-freq 4">
@@ -481,8 +475,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="66 MHz(vpll)" value="66"/> 
-			<spinnerItem name="54 MHz(vpll)" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the fifth GPU frequency step. (Default: 267Mhz) WARNING! 400, 440, 520 MHz needs 1300 mV - 1450 mV. (520Mhz stable on 1400mV+ if your chip can handle that) Above 1300 mV you risk to burn your chip!" name="GPU Frequency Step 5" action="gpu-freq 5">
@@ -494,8 +486,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="66 MHz(vpll)" value="66"/> 
-			<spinnerItem name="54 MHz(vpll)" value="54"/> 
 		</spinner>
 
 	</settingsPane>

@@ -3,7 +3,7 @@
 
 	<settingsPane description="Booster Control. Here you can set boost CPU frequency, after boot done, boot boost frequency will be restored to active profile settings." name="Boost CPU Frequency">
 
-		<seekBar description="Boot booster frequency. CPU will hold single min or max frequency when ROM booting, DEAR USER! If your CPU cannot handle 1.5Ghz or 1.6Ghz, setting it here will STUCK your device on boot until you reset profiles via recovery! (default 1.200.000 kHz)" name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Boot booster frequency. CPU will hold single min or max frequency when ROM booting. If your CPU cannot handle 1.5Ghz or 1.6Ghz, setting it here will leave your device STUCK on boot until you reset profiles via recovery! (default 1.200.000 kHz)" name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="CPU Boost frequency tuning, each time there is a spike load, CPU Govs Hyper, Ondemand, Pegasusq, Neox, will be boosted with instant frequency boost to finish the jobs. this setting depends on max CPU frequency! you cant set 1500Mhz here and set 1200Mhz MAX below! govs will obey max frequency" name="Boost CPU Frequency" action="generic_cortex /tmp/boostfreq" unit="kHz" min="500000" reversed="false" step="100000" max="1600000"/>
 
@@ -341,7 +341,7 @@
 			<spinnerItem name="512 kB" value="512"/> 
 			<spinnerItem name="1024 kB" value="1024"/> 
 			<spinnerItem name="2048 kB" value="2048"/> 
-			<spinnerItem name="4096 kB" value="4096"/> 
+			<spinnerItem name="2560 kB" value="2560"/> 
 		</spinner>
 
 		<spinner description="This will set the default AWAKE IO scheduler for internal, system, data and external sdcard. (Default: SIO)" name="Default Awake IO Scheduler" action="scheduler">
@@ -902,9 +902,9 @@
 
 <settingsTab name="PARTITIONS">
 
-	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." name="Partitions Scan">
+	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them. (clean=no errors)" name="Partitions Scan">
 
-		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data may be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
+		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button. USE IT AT YOUR OWN RISK! Some data may be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install the ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
 
 	</settingsPane>
 

@@ -34,7 +34,7 @@ if [ "$WGET_CHECK1" -eq "1" ] || [ "$WGET_CHECK2" -eq "1" ]; then
 		echo "Problem: no internet connection! connect and try again";
 	else
 		wget https://www.androidfilehost.com/?w=files&flid=36006 -O $TMPFILE > /dev/null 2>&1;
-		cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/S.*//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' | sort -r > $TMPFILE2;
+		cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' | sort -r > $TMPFILE2;
 
 		for version in $(cat $TMPFILE2); do
 			expr "$OLD_VERSION" \< "$version" >/dev/null && echo "There is a new version of this kernel available!!!" && break;

@@ -631,7 +631,7 @@
 
 	<settingsPane description="BackLightNotification and Touch Keys related Settings" name="BackLightNotification">
 
-		<checkbox description="Ticking this will enabled Backlight Notifications(BLN). Your hardware buttons will light up whenever you receive a notification. For better battery life, please also stick BLNWW" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
+		<checkbox description="Ticking this will enabled Backlight Notifications(BLN). Your hardware buttons will light up whenever you receive a notification. For better battery life, please also tick BLNWW" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
 		<spinner description="This setting will set LED behavior for BLN, !README! if BLNWW is ON(see below)! then effect is ONLY Steady! and will be reset to !Steady!" name="BLN Effect" action="bln_switch">
 			<spinnerItem name="Steady" value="0"/> 

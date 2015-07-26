@@ -1018,6 +1018,8 @@
 <settingsTab name="KERNEL-UPDATE">
 
 	<settingsPane description="Get the latest kernel update from the XDA website! The Update feature has not been fixed yet." name="Kernel-Update">
+	
+		<button description="Check for Update" name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
 
 	</settingsPane>
 

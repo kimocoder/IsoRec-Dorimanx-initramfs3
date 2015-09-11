@@ -96,6 +96,9 @@ fi;
 [ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/performance.profile;
 [ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/extreme_performance.profile;
 [ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/extreme_battery.profile;
+[ ! -f /data/.siyah/user_profile_1.profile ] && cp -a /res/customconfig/user_profile_1.profile /data/.siyah//user_profile_1.profile;
+[ ! -f /data/.siyah/user_profile_2.profile ] && cp -a /res/customconfig/user_profile_2.profile /data/.siyah/user_profile_2.profile;
+[ ! -f /data/.siyah/user_profile_3.profile ] && cp -a /res/customconfig/user_profile_3.profile /data/.siyah/user_profile_3.profile;
 
 $BB chmod -R 0777 /data/.siyah/;
 

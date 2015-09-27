@@ -7,12 +7,12 @@
 
 	if [ "$cron_trim_partitions" == "on" ]; then
 
-		#while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
-		#	echo "Waiting For CPU to cool down" >> /data/crontab/cron_trim_partitions;
-		#	sleep 30;
-		#done;
+		while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
+			echo "Waiting For CPU to cool down";
+			sleep 30;
+		done;
 
-		date +%H:%M-%D-%Z >> /data/crontab/cron_trim_partitions;
+		date +%H:%M-%D-%Z > /data/crontab/cron_trim_partitions;
 		echo "Trim CACHE Partition" >> /data/crontab/cron_trim_partitions;
                 /sbin/fstrim -v /cache  >> /data/crontab/cron_trim_partitions;	
                 

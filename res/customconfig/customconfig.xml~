@@ -205,6 +205,7 @@
 	<settingsPane description="ZZMOOVE Gov Configuration, see descriptions" name="ZZMOOVE GOV CONFIGURATON">
 
 		<spinner description="Switch zzmoove profiles (Default: Default)" name="profile_number" action="generic_cortex /tmp/profile_number">
+			<spinnerItem name="No profile (tunable mode)" value="0"/> 
 			<spinnerItem name="Default" value="1"/> 
 			<spinnerItem name="Yank Battery" value="2"/> 
 			<spinnerItem name="Yank Battery Extreme" value="3"/> 
@@ -236,7 +237,7 @@
 
 		<seekBar description="1-4 number of scaling jumps only for upscaling, 5-8 equivalent to 1-4 for up and down scaling. (Default: 0)" name="fast_scaling_up" action="generic_cortex /tmp/fast_scaling_up" unit="int" min="0" reversed="false" step="1" max="8"/>
 
-		<seekBar description="1-4 number of scaling jumps only for upscaling, 5-8 equivalent to 1-4 for up and down scaling. (Default: 0)" name="fast_scaling_down" action="generic_cortex /tmp/fast_scaling_down" unit="int" min="0" reversed="false" step="1" max="8"/>
+		<seekBar description="1-4 number of scaling jumps only for downscaling, 5-8 equivalent to 1-4 for up and down scaling. (Default: 0)" name="fast_scaling_down" action="generic_cortex /tmp/fast_scaling_down" unit="int" min="0" reversed="false" step="1" max="8"/>
 
 		<spinner description="Switch to enable/disable early demand functionality (possible values 0 disable or 1 enable. (Default: Disabled)" name="early_demand" action="generic_cortex /tmp/early_demand">
 			<spinnerItem name="Disabled" value="0"/> 

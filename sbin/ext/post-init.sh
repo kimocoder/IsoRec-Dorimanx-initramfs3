@@ -115,7 +115,7 @@ fi;
 # $BB sh /sbin/ext/install.sh;
 
 # Clean /res/ from no longer needed files to free modules kernel allocated mem
-$BB rm -rf /res/misc/sql /res/images /res/misc/JellyB-* /res/misc/KitKat-CM-AOKP-11 /res/misc/Lollipop-CM-AOKP-12.1 /res/misc/vendor;
+$BB rm -rf /res/misc/sql /res/images /res/misc/JellyB-* /res/misc/KitKat-CM-AOKP-* /res/misc/Lollipop-CM-AOKP-12.1 /res/misc/vendor;
 
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks
@@ -276,7 +276,7 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/ump/parameters/ump_debug_level;
 	echo "0" > /sys/module/mali/parameters/mali_debug_level;
 	echo "0" > /sys/module/kernel/parameters/initcall_debug;
-#	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 	echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
 	echo "0" > /sys/module/alarm/parameters/debug_mask;

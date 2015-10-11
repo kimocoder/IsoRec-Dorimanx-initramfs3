@@ -369,7 +369,7 @@ TUNE_PARTITION()
 	sh -c "/sbin/e2fsck -nv $DEVICE" > $LOG_TMP;
 	cat $LOG_TMP >> $LOG;
 	echo "" >> $LOG;
-	if [ "$(cat $LOG_TMP | grep "clean" | wc -l)" -eq "0" ]; then
+	if [ "$(cat $LOG_TMP | grep 'clean' | wc -l)" -eq "0" ]; then
 		NEED_CHECK;
 		echo "DEVICE $DEVICE NEEDS DO BE FIX" >> $LOG;
 		echo "0" > $LOG_TMP;

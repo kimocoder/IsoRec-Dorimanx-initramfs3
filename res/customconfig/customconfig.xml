@@ -245,11 +245,6 @@
 
 		<seekBar description="Scale up frequency if the load goes up in one step of grad up value. (Default: 50%)" name="grad_up_threshold" action="generic_cortex /tmp/grad_up_threshold" unit="%" min="11" reversed="false" step="1" max="100"/>
 
-		<spinner description="Switch to enable/disable hotplugging (possible values are any value above 0 to disable hotplugging and 0 to enable it. (Default: Enabled)" name="disable_hotplug" action="generic_cortex /tmp/disable_hotplug">
-			<spinnerItem name="Enabled" value="0"/> 
-			<spinnerItem name="Disabled" value="1"/> 
-		</spinner>
-
 	</settingsPane>
 
 </settingsTab>
@@ -982,7 +977,7 @@
 
 <settingsTab name="KERNEL-UPDATE">
 
-	<settingsPane description="Get the latest kernel update from the XDA website! The Update feature has not been fixed yet." name="Kernel-Update">
+	<settingsPane description="Get the latest kernel update from my XDA thread! The Update feature has not been fixed yet." name="Kernel-Update">
 
 	</settingsPane>
 

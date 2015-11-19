@@ -410,7 +410,7 @@
 			<spinnerItem name="Set ZRAM OFF!" value="4"/> 
 		</spinner>
 
-		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. It is not recommended to enable swap as it is very resource heavy. Use ZRAM instead!(Default: 0)" name="swappiness" action="generic /proc/sys/vm/swappiness">
+		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. It is not recommended to set this value too high, otherwise this will put a lot of stress on the CPU! (Default: 0)" name="swappiness" action="generic /proc/sys/vm/swappiness">
 			<spinnerItem name="0" value="0"/> 
 			<spinnerItem name="10" value="10"/> 
 			<spinnerItem name="20" value="20"/> 

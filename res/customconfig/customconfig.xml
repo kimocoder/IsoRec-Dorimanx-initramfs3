@@ -403,14 +403,14 @@
 
 		<button description="Clean RAM Cache. This will release all cached and buffered RAM, please WAIT 3sec to get cleanup report" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
 
-		<spinner description="ZRAM Module settings. Here you can shut down ZRAM or add more compressed RAM for your system." name="ZRAM Settings" action="zramtweaks">
+		<spinner description="ZRAM Module settings. Here you can shut down ZRAM or add more compressed RAM for your system. Make sure to also set a value higher than zero for swappiness if you want to use zram." name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
 			<spinnerItem name="Set ZRAM to 300MB (default)" value="2"/> 
 			<spinnerItem name="Set ZRAM to 600MB" value="3"/> 
 			<spinnerItem name="Set ZRAM OFF!" value="4"/> 
 		</spinner>
 
-		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. It is not recommended to enable swap as it is very resource heavy. Use ZRAM instead!(Default: 0)" name="swappiness" action="generic /proc/sys/vm/swappiness">
+		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. You must set a value higher then zero if you want to use zram, since zram is basically swap space. It is not recommended to set this value too high, otherwise this will put a lot of stress on the CPU! (Default: 0)" name="swappiness" action="generic /proc/sys/vm/swappiness">
 			<spinnerItem name="0" value="0"/> 
 			<spinnerItem name="10" value="10"/> 
 			<spinnerItem name="20" value="20"/> 

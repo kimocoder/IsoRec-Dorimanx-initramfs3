@@ -42,7 +42,7 @@ case "${scheduler}" in
 		BLOCK_GOV=row;
 		SCHED_SET;
 	;;
-	sioplus)
+	sio)
 		BLOCK_GOV=sioplus;
 		SCHED_SET;
 	;;

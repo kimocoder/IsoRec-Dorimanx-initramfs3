@@ -770,6 +770,7 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
 	$BB rm -rf /res/misc/JellyB-*;
 	$BB rm -rf /res/misc/KitKat-*;
+	$BB rm -rf /res/misc/Lollipop-*;
 	if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
 		echo "172" > /sys/devices/virtual/sec/sec_key/set_homekey;
 	fi;
@@ -797,12 +798,26 @@ elif [ "$CM_AOKP_4_3_JB" -eq "1" ]; then
 	fi;
 	$BB rm -rf /res/misc/JellyB-*;
 	$BB rm -rf /res/misc/KitKat-*;
+	$BB rm -rf /res/misc/Lollipop-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 
 	if [ ! -e /system/framework/telephony-msim.jar ]; then
 		CLEAN_MSIM;
 	fi;
+
+	SECROM_FUNCTION_AOSP;
+
+elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
+	echo "3" > /proc/sys/kernel/rom_feature_set;
+	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
+	POWER_SQL_JB;
+	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
+	$BB rm -rf /res/misc/JellyB-*;
+	$BB rm -rf /res/misc/KitKat-*;
+	$BB rm -rf /res/misc/Lollipop-*;
+	# for sbin/ext/install.sh
+	echo "1" > /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;
 
@@ -818,6 +833,7 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 	fi;
 	$BB rm -rf /res/misc/JellyB-*;
 	$BB rm -rf /res/misc/KitKat-*;
+	$BB rm -rf /res/misc/Lollipop-*;
 	# for sbin/ext/install.sh
 	echo "1" > /tmp/cm10.2-installed;
 	# for sbin/ext/post_init.sh
@@ -827,8 +843,6 @@ elif [ "$CM_AOKP_11_KITKAT" -eq "1" ]; then
 
 elif [ "$CM_AOKP_12_1_LP" -eq "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
-	# Injecting KitKat Modded by FusionJack, SUPER libsqlite!
-#	POWER_SQL_LOLLIPOP;
 	$BB cp -a /res/misc/Lollipop-CM-AOKP-12.1/* /;
 	$BB rm -rf /res/misc/JellyB-*;
 	$BB rm -rf /res/misc/KitKat-*;
@@ -837,18 +851,6 @@ elif [ "$CM_AOKP_12_1_LP" -eq "1" ]; then
 	echo "1" > /tmp/cm10.2-installed;
 	# for sbin/ext/post_init.sh
 	echo "1" > /tmp/cm11-installed;
-
-	SECROM_FUNCTION_AOSP;
-
-elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
-	echo "3" > /proc/sys/kernel/rom_feature_set;
-	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
-	POWER_SQL_JB;
-	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
-	$BB rm -rf /res/misc/JellyB-*;
-	$BB rm -rf /res/misc/KitKat-*;
-	# for sbin/ext/install.sh
-	echo "1" > /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;
 else

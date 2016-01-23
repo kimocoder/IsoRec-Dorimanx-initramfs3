@@ -183,10 +183,10 @@ fi;
 SYSTEM_TWEAKS()
 {
 	if [ "$cortexbrain_system" == "on" ]; then
-		#setprop hwui.render_dirty_regions false;
+		setprop hwui.render_dirty_regions false;
 		setprop windowsmgr.max_events_per_sec 240;
-		#setprop profiler.force_disable_err_rpt 1;
-		#setprop profiler.force_disable_ulog 1;
+		setprop profiler.force_disable_err_rpt 1;
+		setprop profiler.force_disable_ulog 1;
 
 		log -p i -t "$FILE_NAME" "*** SYSTEM_TWEAKS ***: enabled";
 	else
@@ -308,7 +308,7 @@ CPU_HOTPLUG_TWEAKS()
 	fi;
 
 	if [ "$hotplug_enable" -eq "1" ]; then
-		if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+		if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] || [ "$SYSTEM_GOVERNOR" == "zzmanX" ]; then
 			#disable intelli_plug
 			if [ "$intelli_value_tmp" -eq "1" ]; then
 				echo "0" > $intelli_plug_active_tmp;
